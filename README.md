@@ -1,17 +1,21 @@
 # comfyui-selector
  
 > Quick and dirty parameter generator node for ComfyUI.
-> 
+>
+ 
+> [!Note]
+>  To Install, `git clone https://github.com/exdysa/comfyui-selector/` , inside your ComfyUI/custom_nodes folder, or just place the .py file inside
+
 > Data output todo :
-> support for Pixart alpha/sigma, 3.0, playground, kandinsky, etc...
-> upscale dimensions and factors
-> custom values
-> multiple steps
-> multiple cfgs
-> refiner steps
-> multiple denoises
-> sampler options
-> multiple seeds
+> - support for Pixart alpha/sigma, 3.0, playground, kandinsky, etc...
+> - upscale dimensions and factors
+> - custom values
+> - multiple steps
+> - multiple cfgs
+> - refiner steps
+> - multiple denoises
+> - sampler options
+> - multiple seeds
 
 ...toast??
 
