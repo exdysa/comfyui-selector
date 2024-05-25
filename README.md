@@ -11,14 +11,14 @@
 
 > 
 > Data output todo :
-> - support for Pixart alpha/sigma, 3.0, playground, kandinsky, etc...
-> - ~upscale dimensions and factors~
+> - support for Pixart alpha/sigma, SD 3.0, playground, kandinsky, etc...
 > - custom values
+> - sampler options
+> - multiple seeds
+> - ~upscale dimensions and factors~
 > - ~multiple steps~
 > - ~multiple cfgs~
 > - ~refiner steps~
 > - ~multiple denoises~
-> - sampler options
-> - multiple seeds
-> - ...toast??
+> - ~...toast??~
 
