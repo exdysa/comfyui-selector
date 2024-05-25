@@ -1,7 +1,5 @@
-#
-
 class selector:
-	# dimensions as sourced from: https://arxiv.org/abs/2307.01952, https://github.com/Stability-AI/generative-models
+    # dimensions as sourced from: https://arxiv.org/abs/2307.01952, https://github.com/Stability-AI/generative-models
     RATIO = [
         ("1:1______512x512", 512, 512),
         ("4:3______682x512", 682, 512),
@@ -37,19 +35,19 @@ class selector:
 
     @classmethod
     def INPUT_TYPES(cls):
-        aspect_ratio_titles = [title for title, _, _ in cls.RATIO]
-        ROTATION = "landscape", "portrait",
+        aspect_ratio_titles = [title for title, res1, res2 in cls.RATIO]
+        rotation = ("landscape", "portrait")
         
         return {
             "required": {
-                ":": (aspect_ratio_titles,),
-                "rotation": (ROTATION,),
+                "aspectRatio": (aspect_ratio_titles,),
+                "rotation": (rotation,),
             },
             "optional": {
                 "batch": 
-					("INT", {"default": 1, "min": 1, "max": 10000,}),
+                    ("INT", {"default": 1, "min": 1, "max": 10000,}),
                 "steps": 
-					("INT", {"default": 20, "min": 1, "max": 10000,}),
+                    ("INT", {"default": 20, "min": 1, "max": 10000,}),
                 "refiner_steps":
                     ("INT", {"default": 20, "min": 1, "max": 10000,}),
                 "cfg": ("FLOAT",{
@@ -57,22 +55,22 @@ class selector:
                          "min": -10.0,
                          "max": 10.0,
                          "step": 0.1,
-                         "round": 0.1
+                         "round": 0.1,
                 }),
                 "refiner_cfg": ("FLOAT", {
                         "default": 1.0,
                         "min": -10.0,
                         "max": 10.0,
                         "step": 0.1,
-                        "round": 0.1
+                        "round": 0.1,
                 }),
-                "str/denoise": ("FLOAT", {
+                "str_denoise": ("FLOAT", {
                         "default": 1.000,
                         "min": -10.000,
                         "max": 10.000,
                         "step": 0.001,
-                        "round": 0.001
-                }),
+                        "round": 0.01,
+                 }),
                 "upscale_factor": ("FLOAT", {
                         "default": 2.0,
                         "min": 1.0,
@@ -80,11 +78,10 @@ class selector:
                         "step": 0.1,
                         "round": 0.1,
                 }),
-        }
-    }   
+            }
+        }   
     RETURN_TYPES = (
-		"INT", "INT", "INT", "INT", "INT",
-		"FLOAT", "FLOAT", "FLOAT", "FLOAT",
+        "INT", "INT", "INT", "INT", "INT", "FLOAT", "FLOAT", "FLOAT", "FLOAT",
     )
     RETURN_NAMES = (
         "WIDTH",
@@ -100,16 +97,13 @@ class selector:
     FUNCTION = "selectah"
     CATEGORY = "image"
 
-    def selectah(self, aspectRatio, rotation):
+    def selectah(self, aspectRatio, rotation, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, upscale_factor):
         for title, width, height in self.RATIO:
             if title == aspectRatio:
                 if rotation == "portrait":
                     width, height = height, width  # Swap for portrait orientation
-                return (width, height)
-        return (None, None)  # In case the aspect ratio is not found
-
+                return (width, height, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, upscale_factor)
+        return (None, None, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, upscale_factor)  # In case the aspect ratio is not found
 
 NODE_CLASS_MAPPINGS = { "Selector": selector, }
 NODE_DISPLAY_NAME_MAPPINGS = { "Selector": "Selector" }
-
-
