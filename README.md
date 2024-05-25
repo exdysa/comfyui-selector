@@ -4,7 +4,7 @@
 >
  
 > [!Note]
->  `git clone https://github.com/exdysa/comfyui-selector/` to install inside your `/ComfyUI/custom_nodes` folder, or just place the .py file inside `custom_nodes`
+>  ```git clone https://github.com/exdysa/comfyui-selector/``` to install inside your `/ComfyUI/custom_nodes` folder, or just place the .py file inside `custom_nodes`
 
 > Data output todo :
 > - support for Pixart alpha/sigma, 3.0, playground, kandinsky, etc...
