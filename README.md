@@ -24,7 +24,7 @@
 > - ~multiple denoises~
 > - ~...toast??~
 
-> Initial features I am likely not attempt :
+> Initial plans I will likely not attempt :
 > - custom values
 > - multiple seeds
 > - nested menu for model types
