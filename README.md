@@ -6,15 +6,15 @@
 > [!Note]
 >  ```git clone https://github.com/exdysa/comfyui-selector/``` to install inside your `/ComfyUI/custom_nodes` folder, or just place the .py file inside `custom_nodes`.
 
-![workflow](https://github.com/exdysa/comfyui-selector/assets/91800957/e4c24da8-afb4-47f5-85f5-e9d5712ffb0a)
-![Screenshot_2024-05-24_19-42-30](https://github.com/exdysa/comfyui-selector/assets/91800957/613b0f3d-4cc1-4fdb-aea4-815c998aaf0d)
+![Screenshot_2024-05-26_16-12-36](https://github.com/exdysa/comfyui-selector/assets/91800957/fbba564f-b4df-48fc-8489-f01dc60bc8ba)
+![Screenshot_2024-05-26_17-44-08](https://github.com/exdysa/comfyui-selector/assets/91800957/30ed648b-802b-474c-a48c-371813d6d102)
+![Screenshot_2024-05-26_16-13-26](https://github.com/exdysa/comfyui-selector/assets/91800957/2dd842b5-f84b-423d-b430-bd85e19e9e33)
 
 > 
 > Data output todo :
-> - support for Pixart alpha/sigma, SD 3.0, playground, kandinsky, etc...
-> - custom values
-> - sampler options
-> - multiple seeds
+> - SD 3.0 resolutions
+> - ~sampler options~
+> - ~support for Pixart alpha/sigma, playground, kandinsky, etc...~
 > - ~upscale dimensions and factors~
 > - ~multiple steps~
 > - ~multiple cfgs~
@@ -22,3 +22,7 @@
 > - ~multiple denoises~
 > - ~...toast??~
 
+> Initial features I am likely not attempt :
+> - custom values
+> - multiple seeds
+> - nested menu for model types
