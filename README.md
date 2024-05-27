@@ -1,10 +1,12 @@
 # comfyui-selector
  
 > Quick and dirty parameter generator node for ComfyUI.
->
+> 
+> The node will be listed under exdysa, or you can type ```.``` to search for it in the double-click menu from the grid. 
  
 > [!Note]
->  ```git clone https://github.com/exdysa/comfyui-selector/``` to install inside your `/ComfyUI/custom_nodes` folder, or just place the .py file inside `custom_nodes`.
+>  ```git clone https://github.com/exdysa/comfyui-selector/```
+> or place [the .py file](https://raw.githubusercontent.com/exdysa/comfyui-selector/main/selector.py) inside `custom_nodes`.
 
 ![Screenshot_2024-05-26_16-12-36](https://github.com/exdysa/comfyui-selector/assets/91800957/fbba564f-b4df-48fc-8489-f01dc60bc8ba)
 ![Screenshot_2024-05-26_17-44-08](https://github.com/exdysa/comfyui-selector/assets/91800957/30ed648b-802b-474c-a48c-371813d6d102)
