@@ -127,4 +127,4 @@ class selectah:
         return (None, None, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale_factor, sampler, scheduler)  # In case the aspect ratio is not found
 
 NODE_CLASS_MAPPINGS = { "Selector": selectah, }
-NODE_DISPLAY_NAME_MAPPINGS = { "Selector": "Selector...        ⠑⠭⠙⠽⠎" }
+NODE_DISPLAY_NAME_MAPPINGS = { "Selector": "Selector...       ⠑⠭⠙⠽⠎⠁" }
