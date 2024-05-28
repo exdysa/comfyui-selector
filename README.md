@@ -14,7 +14,7 @@
 
 > 
 > Data output todo :
-> - SD 3.0 resolutions
+> - ~SD 3.0 resolutions~
 > - ~sampler options~
 > - ~support for Pixart alpha/sigma, playground, kandinsky, etc...~
 > - ~upscale dimensions and factors~
