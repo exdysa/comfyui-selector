@@ -1,6 +1,6 @@
 # comfyui-selector
  
-> Quick and dirty parameter generator node for ComfyUI.
+> Quick and dirty parameter generator node for [ComfyUI](https://github.com/comfyanonymous/comfyui)
 > 
 > The node will be listed under exdysa, or you can type ```.``` to search for it in the double-click menu from the grid. 
  
