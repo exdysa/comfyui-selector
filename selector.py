@@ -69,28 +69,28 @@ class selectah:
                          "default": 1.00,
                          "min": 0.00,
                          "max": 100.00,
-                         "step": 0.01,
+                         "step": 0.50,
                          "round": 0.01,
                 }),
                 "refiner_cfg": ("FLOAT", {
                         "default": 1.00,
                         "min": 0.00,
                         "max": 100.00,
-                        "step": 0.01,
+                        "step": 0.50,
                         "round": 0.01,
                 }),
                 "str_denoise": ("FLOAT", {
                         "default": 1.000,
                         "min": 0.000,
-                        "max": 100.000,
-                        "step": 0.001,
+                        "max": 1000.000,
+                        "step": 0.500,
                         "round": 0.001,
                  }),
                 "scale_factor": ("FLOAT", {
                         "default": 2.00,
                         "min": 0.00,
-                        "max": 10.00,
-                        "step": 0.01,
+                        "max": 1000.00,
+                        "step": 0.50,
                         "round": 0.01,
                 }),
                 "sampler": (comfy.samplers.KSampler.SAMPLERS,),
@@ -126,5 +126,37 @@ class selectah:
                 return (width, height, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale_factor, sampler, scheduler)
         return (None, None, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale_factor, sampler, scheduler)  # In case the aspect ratio is not found
 
-NODE_CLASS_MAPPINGS = { "Selector": selectah, }
-NODE_DISPLAY_NAME_MAPPINGS = { "Selector": "Selector...       ⠑⠭⠙⠽⠎⠁" }
+# pythongossss 🤍
+class ne_ting(str):
+    def __ne__(self, __value: object) -> bool:
+        return False
+
+anyting = ne_ting("*")
+
+# ltdrdata 🤍
+class re_korz:
+    def __init__(self):
+        pass
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "optional": {"input": (anyting,), "fallback": (anyting,),},
+            "required": {}
+
+        }
+
+    RETURN_TYPES = (anyting, "BOOLEAN", )
+    RETURN_NAMES = ("OUTPUT", "BOO")
+    FUNCTION = "checkit"
+
+    CATEGORY = "utils/Recourse"
+
+    def checkit(self, input=None, fallback=None):
+        if input is None:
+            return (fallback, False, )
+        else:
+            return (input, True, )
+
+NODE_CLASS_MAPPINGS = { "Selector": selectah, "Recourse": re_korz}
+NODE_DISPLAY_NAME_MAPPINGS = { "Selector": "Selector...       ⠑⠭⠙⠽⠎⠁", "Recourse": "Recourse...       ⠑⠭⠙⠽⠎⠁"  }
