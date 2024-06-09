@@ -94,7 +94,7 @@ class selectah:
                         "step": 0.01,
                         "round": 0.01,
                 }),
-                "variation_strength": ("FLOAT", {
+                "variation_str": ("FLOAT", {
                         "default": 0.000,
                         "min": 0.000,
                         "max": 1000.000,
