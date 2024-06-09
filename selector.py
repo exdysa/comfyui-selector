@@ -1,11 +1,12 @@
 #
 
 """
-@author:˶𝞢⤬⫒ⵖsᐼ˶
-@title: Selector
-@nickname: Selector
+@author:"˶𝞢⤬⫒ⵖsᐼ˶"
+@title: "Selector"
+@nickname: "Selector"
+@version: "1.4"
 @project: "https://github.com/exdysa/comfyui-selector",
-@description: Preset aspect ratios and inference parameters.
+@description: "Selector and Recourse for exdysa workflow. Preset aspect ratios, general settings, fallback switches."
 """
 
 import comfy.samplers
@@ -69,29 +70,36 @@ class selectah:
                          "default": 1.00,
                          "min": 0.00,
                          "max": 100.00,
-                         "step": 0.50,
+                         "step": 0.01,
                          "round": 0.01,
                 }),
                 "refiner_cfg": ("FLOAT", {
                         "default": 1.00,
                         "min": 0.00,
                         "max": 100.00,
-                        "step": 0.50,
+                        "step": 0.01,
                         "round": 0.01,
                 }),
                 "str_denoise": ("FLOAT", {
-                        "default": 1.000,
-                        "min": 0.000,
-                        "max": 1000.000,
-                        "step": 0.500,
-                        "round": 0.001,
+                        "default": 0.500,
+                        "min": 0.00,
+                        "max": 1000.00,
+                        "step": 0.01,
+                        "round": 0.01,
                  }),
                 "scale_factor": ("FLOAT", {
                         "default": 2.00,
                         "min": 0.00,
                         "max": 1000.00,
-                        "step": 0.50,
+                        "step": 0.01,
                         "round": 0.01,
+                }),
+                "variation_strength": ("FLOAT", {
+                        "default": 0.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
                 }),
                 "sampler": (comfy.samplers.KSampler.SAMPLERS,),
                 "scheduler": (comfy.samplers.KSampler.SCHEDULERS,)
@@ -99,7 +107,7 @@ class selectah:
         }   
     RETURN_TYPES = (
         "INT", "INT", "INT", "INT", "INT", "FLOAT",
-        "FLOAT", "FLOAT", "FLOAT",comfy.samplers.KSampler.SAMPLERS,
+        "FLOAT", "FLOAT", "FLOAT", "FLOAT", comfy.samplers.KSampler.SAMPLERS,
         comfy.samplers.KSampler.SCHEDULERS,)
         
     RETURN_NAMES = (
@@ -112,19 +120,20 @@ class selectah:
         "REFINER_CFG",
         "STRENGTH",
         "SCALE",
+        "VARIATION_STR",
         "SAMPLER",
         "SCHEDULER",
     )
     FUNCTION = "selectah"
     CATEGORY = "image"
 
-    def selectah(self, aR, rotation, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale_factor, sampler, scheduler):
+    def selectah(self, aR, rotation, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale_factor, variation_str, sampler, scheduler):
         for title, width, height in self.RATIO:
             if title == aR:
                 if rotation == "portrait":
                     width, height = height, width  # Swap for portrait orientation
-                return (width, height, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale_factor, sampler, scheduler)
-        return (None, None, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale_factor, sampler, scheduler)  # In case the aspect ratio is not found
+                return (width, height, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale_factor, variation_str, sampler, scheduler)
+        return (None, None, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale_factor, variation_str, sampler, scheduler)  # In case the aspect ratio is not found
 
 # pythongossss 🤍
 class ne_ting(str):
