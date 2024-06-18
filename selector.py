@@ -4,7 +4,7 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "2.0"
+@version: "2.0.0"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
