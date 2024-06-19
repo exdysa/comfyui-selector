@@ -300,7 +300,7 @@ def fork_farm(type: str):
         def INPUT_TYPES(s):
             return {
                 "optional": {
-                    "selected_model": ("INT", {"default": 1, "min": 1, "max": 10000,}),
+                    "selector_taboo": ("INT", {"default": 1, "min": 1, "max": 10000,}),
                     type: (type.upper(), ),
                 },
                 "required": {}
@@ -312,17 +312,64 @@ def fork_farm(type: str):
 
         CATEGORY = "utils/Recourse"
 
-        def forkd(selected_model, model):
-            model[f"opt_{get_alphabet(4)[selected_model]}"] if selected_model < 5 else None
+        def forkd(selector_taboo, model):
+            model[f"opt_{get_alphabet(4)[selector_taboo]}"] if selector_taboo < 5 else None
     
     return fork
+
+
+# ltdrdata 🤍
+# class fork:
+#     @classmethod
+#     def INPUT_TYPES(s):
+#         return {
+#             "optional": {
+#                 "selector": 
+#                     ("INT", {"default": 1, "min": 1, "max": 10000,}),
+#                 "model": ("MODEL",),
+#             },
+#             "required": {}
+#         }
+
+#     RETURN_TYPES = "MODEL", "MODEL", "MODEL", "MODEL",
+#     RETURN_NAMES = "OUT_A", "OUT_B", "OUT_C", "OUT_D", 
+#     FUNCTION = "forkd"
+
+#     CATEGORY = "utils/Recourse"
+
+#     def forkd(selector, model):
+
+#         [model_opta, model_optb, model_optc, model_optd, model_optd][opt_selector] if selector < 5 else None
+
+
+# class fork_clip:
+#     @classmethod
+#     def INPUT_TYPES(s):
+#         return {
+#             "optional": {
+#                 "selector": 
+#                     ("INT", {"default": 1, "min": 1, "max": 10000,}),
+#                 "clip": ("CLIP",),
+#             },
+#             "required": {}
+#         }
+
+#     RETURN_TYPES = "CLIP", "CLIP", "CLIP", "CLIP",
+#     RETURN_NAMES = "OUT_A", "OUT_B", "OUT_C", "OUT_D", 
+#     FUNCTION = "forkd"
+
+#     CATEGORY = "utils/Recourse"
+
+#     def forkd(switch, clip):
+
+#         [clip_opta, clip_optb, clip_optc, clip_optd, clip_optd][selector] if selector < 5 else None
 
 class unite:
     @classmethod
     def INPUT_TYPES(s):
         return {
             "optional": {
-                "model_selection": ("INT", {"default": 1, "min": 1, "max": 10000}),
+                "selector": ("INT", {"default": 1, "min": 1, "max": 10000}),
                 **{f"latent_opt{l}": ("LATENT", ) for l in get_alphabet(4)}
             },
             "required": {}
@@ -334,8 +381,8 @@ class unite:
 
     CATEGORY = "utils/Recourse"
 
-    def unity(model_selection, latent_opta, latent_optb, latent_optc, latent_optd):
-        (latent_opta, latent_optb, latent_optc, latent_optd)[min(4, model_selection)]
+    def unity(selector, latent_opta, latent_optb, latent_optc, latent_optd):
+        (latent_opta, latent_optb, latent_optc, latent_optd)[min(4, selector)]
 
 NODE_CLASS_MAPPINGS = { "Selector": selectah,
                         "Recourse": re_korz,
@@ -347,12 +394,12 @@ NODE_CLASS_MAPPINGS = { "Selector": selectah,
                         "Unite": unite,
                       }
 
-NODE_DISPLAY_NAME_MAPPINGS = { "Selector": "Selector...",
-                                "Recourse": "Recourse...", 
-                                "RecourseCkpt": "RecourseCheck...",
-                                "Recourse+/-": "RecoursePolar...",
-                                "RecourseImage": "RecourseImage...",
-                                "Fork": "Fork (Model)...",
-                                "ForkClip": "Fork (Clip)...",
-                                "Unite": "Unite (Latent)...",
+NODE_DISPLAY_NAME_MAPPINGS = { "Selector": "Selector...       ⠑⠭⠙⠽⠎⠁",
+                                "Recourse": "Recourse...       ⠑⠭⠙⠽⠎⠁", 
+                                "RecourseCkpt": "RecourseCheck...  ⠑⠭⠙⠽⠎⠁",
+                                "Recourse+/-": "RecoursePolar...  ⠑⠭⠙⠽⠎⠁",
+                                "RecourseImage": "RecourseImage...  ⠑⠭⠙⠽⠎⠁",
+                                "Fork": "Fork (Model)...   ⠑⠭⠙⠽⠎⠁",
+                                "ForkClip": "Fork (Clip)...    ⠑⠭⠙⠽⠎⠁",
+                                "Unite": "Unite (Latent)...  ⠑⠭⠙⠽⠎⠁",
                             }
