@@ -194,7 +194,7 @@ class re_korz_ckpt:
         "MODEL","CLIP", "VAE", "INT"
         )
     RETURN_NAMES = (
-        "MODEL", "CLIP", "VAE", "M_TYPE(1-5)"
+        "MODEL", "CLIP", "VAE", "M_TYPE"
 
     )
     FUNCTION = "checkckpt"
@@ -222,7 +222,7 @@ class re_korz_ckpt:
             elif isinstance(model_out, comfy.model_base.SD3):
                 m_type=3
             else:
-                m_type=5
+                m_type=1
         
         return (model_out,clip_out,vae_out,m_type)
 
@@ -342,7 +342,11 @@ def fork_farm(type: str):
 
 #     CATEGORY = "utils/Recourse"
 
+<<<<<<< Updated upstream
 #     def forkd(selector, model):
+=======
+    def forkd(self, switch, model):
+>>>>>>> Stashed changes
 
 #         [model_opta, model_optb, model_optc, model_optd, model_optd][opt_selector] if selector < 5 else None
 
@@ -363,7 +367,11 @@ def fork_farm(type: str):
 #     RETURN_NAMES = "OUT_A", "OUT_B", "OUT_C", "OUT_D", 
 #     FUNCTION = "forkd"
 
+<<<<<<< Updated upstream
 #     CATEGORY = "utils/Recourse"
+=======
+    def forkd(self, switch, clip):
+>>>>>>> Stashed changes
 
 #     def forkd(switch, clip):
 
@@ -374,6 +382,7 @@ class unite:
     def INPUT_TYPES(s):
         return {
             "optional": {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
                 "selector": ("INT", {"default": 1, "min": 1, "max": 10000}),
 =======
@@ -382,6 +391,17 @@ class unite:
                 **{f"latent_opt{l}": ("LATENT", ) for l in get_alphabet(4)}
             },
             "required": {}
+=======
+                "latent1": ("LATENT",),
+                "latent2": ("LATENT",),
+                "latent3": ("LATENT",),
+                "laten4": ("LATENT",),
+                "selection": 
+                     ("INT", {"default": 1, "min": 1, "max": 100,}),
+            },
+            "required": {
+            }
+>>>>>>> Stashed changes
         }
 
     RETURN_TYPES = "LATENT",
@@ -390,6 +410,7 @@ class unite:
 
     CATEGORY = "utils/Recourse"
 
+<<<<<<< Updated upstream
 <<<<<<< HEAD
     def unity(selector, latent_opta, latent_optb, latent_optc, latent_optd):
         (latent_opta, latent_optb, latent_optc, latent_optd)[min(4, selector)]
@@ -397,6 +418,19 @@ class unite:
     def unity(model_selection, latent_opta, latent_optb, latent_optc, latent_optd):
         (latent_opta, latent_optb, latent_optc, latent_optd)[min(4, model_selection)]
 >>>>>>> parent of 89a5acd (Update selector.py)
+=======
+
+    def unity(self, **kwargs):
+        latent_out = f"latent{int(kwargs['selection'])}"
+
+        if latent_out in kwargs:
+            return (kwargs[latent_out],)
+        else:
+            print(f"selection invalid - indexing error")
+            return (kwargs['latent1'],)
+        
+
+>>>>>>> Stashed changes
 
 NODE_CLASS_MAPPINGS = { "Selector": selectah,
                         "Recourse": re_korz,
