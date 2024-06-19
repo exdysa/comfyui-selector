@@ -312,8 +312,13 @@ def fork_farm(type: str):
 
         CATEGORY = "utils/Recourse"
 
+<<<<<<< HEAD
         def forkd(selector_taboo, model):
             model[f"opt_{get_alphabet(4)[selector_taboo]}"] if selector_taboo < 5 else None
+=======
+        def forkd(selected_model, model):
+            model[f"opt_{get_alphabet(4)[selected_model]}"] if selected_model < 5 else None
+>>>>>>> parent of 89a5acd (Update selector.py)
     
     return fork
 
@@ -369,7 +374,11 @@ class unite:
     def INPUT_TYPES(s):
         return {
             "optional": {
+<<<<<<< HEAD
                 "selector": ("INT", {"default": 1, "min": 1, "max": 10000}),
+=======
+                "model_selection": ("INT", {"default": 1, "min": 1, "max": 10000}),
+>>>>>>> parent of 89a5acd (Update selector.py)
                 **{f"latent_opt{l}": ("LATENT", ) for l in get_alphabet(4)}
             },
             "required": {}
@@ -381,8 +390,13 @@ class unite:
 
     CATEGORY = "utils/Recourse"
 
+<<<<<<< HEAD
     def unity(selector, latent_opta, latent_optb, latent_optc, latent_optd):
         (latent_opta, latent_optb, latent_optc, latent_optd)[min(4, selector)]
+=======
+    def unity(model_selection, latent_opta, latent_optb, latent_optc, latent_optd):
+        (latent_opta, latent_optb, latent_optc, latent_optd)[min(4, model_selection)]
+>>>>>>> parent of 89a5acd (Update selector.py)
 
 NODE_CLASS_MAPPINGS = { "Selector": selectah,
                         "Recourse": re_korz,
