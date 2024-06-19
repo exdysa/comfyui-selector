@@ -1,4 +1,4 @@
-
+#
 
 """
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
@@ -6,7 +6,7 @@
 @nickname: "Selector"
 @version: "2.0.0"
 @project: "https://github.com/exdysa/comfyui-selector",
-@description: "Selector & Recourse. Presets & failsafes. Work flow."
+@description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
 
 import comfy.samplers
@@ -194,7 +194,7 @@ class re_korz_ckpt:
         "MODEL","CLIP", "VAE", "INT"
         )
     RETURN_NAMES = (
-        "MODEL", "CLIP", "VAE", "M_TYPE"
+        "MODEL", "CLIP", "VAE", "M_TYPE(1-5)"
 
     )
     FUNCTION = "checkckpt"
@@ -222,7 +222,7 @@ class re_korz_ckpt:
             elif isinstance(model_out, comfy.model_base.SD3):
                 m_type=3
             else:
-                m_type=1
+                m_type=5
         
         return (model_out,clip_out,vae_out,m_type)
 
@@ -312,7 +312,7 @@ def fork_farm(type: str):
 
         CATEGORY = "utils/Recourse"
 
-        def forkd(self, selected_model, model):
+        def forkd(selected_model, model):
             model[f"opt_{get_alphabet(4)[selected_model]}"] if selected_model < 5 else None
     
     return fork
@@ -322,7 +322,7 @@ class unite:
     def INPUT_TYPES(s):
         return {
             "optional": {
-                "selector": ("INT", {"default": 1, "min": 1, "max": 4}),
+                "model_selection": ("INT", {"default": 1, "min": 1, "max": 10000}),
                 **{f"latent_opt{l}": ("LATENT", ) for l in get_alphabet(4)}
             },
             "required": {}
@@ -334,10 +334,8 @@ class unite:
 
     CATEGORY = "utils/Recourse"
 
-    def unity(self, **kwargs):
-        selector = kwargs.get("selector", 1) - 1
-        return [kwargs.get(f"latent_opt{l}", None) for l in get_alphabet(4)][min(3, selector)]
-
+    def unity(model_selection, latent_opta, latent_optb, latent_optc, latent_optd):
+        (latent_opta, latent_optb, latent_optc, latent_optd)[min(4, model_selection)]
 
 NODE_CLASS_MAPPINGS = { "Selector": selectah,
                         "Recourse": re_korz,
