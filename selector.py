@@ -16,8 +16,6 @@ import comfy.model_base
 import comfy.model_management
 import comfy.model_sampling
 
-def get_alphabet(n): return [chr(i) for i in range(97, 97 + n)]
-
 class selectah:
     
     # dimensions sourced from: https://arxiv.org/abs/2307.01952
@@ -181,12 +179,14 @@ class re_korz_ckpt:
     def INPUT_TYPES(cls):
         return {
             "optional": {
-                f"{typ}_opt{l}": (typ,) for typ, n in {
-                    "model": 2,
-                    "clip": 3,
-                    "vae": 2
-                }.items() for l in get_alphabet(n)
-            },
+                "model_opta": ("MODEL",),
+                "model_optb": ("MODEL",),
+                "clip_opta": ("CLIP",),
+                "clip_optb": ("CLIP",),
+                "clip_optc": ("CLIP",),
+                "vae_opta": ("VAE",),
+                "vae_optb": ("VAE",),
+                },
             "required": {}
         }
 
@@ -234,9 +234,15 @@ class re_korz_polarity:
     def INPUT_TYPES(cls):
         return {
             "optional": {
-                **{f"pos_opt{l}": ("CONDITIONING", ) for l in get_alphabet(4)},
-                **{f"neg_opt{l}": ("CONDITIONING", ) for l in get_alphabet(4)}
-            },
+                "pos_opta": ("CONDITIONING",),
+                "pos_optb": ("CONDITIONING",),
+                "pos_optc": ("CONDITIONING",),
+                "pos_optd": ("CONDITIONING",),
+                "neg_opta": ("CONDITIONING",),
+                "neg_optb": ("CONDITIONING",),
+                "neg_optc": ("CONDITIONING",),
+                "neg_optd": ("CONDITIONING",),
+                },
             "required": {}
         }
 
@@ -247,10 +253,10 @@ class re_korz_polarity:
         "CONDITION+", "CONDITION-", 
 
     )
-    FUNCTION = "check_cond"
+    FUNCTION = "checkcond"
     CATEGORY = "utils/Recourse"
 
-    def check_cond(self, pos_opta=0, pos_optb=0, pos_optc=0, pos_optd=0, neg_opta=0, neg_optb=0, neg_optc=0, neg_optd=0):
+    def checkcond(self, pos_opta=0, pos_optb=0, pos_optc=0, pos_optd=0, neg_opta=0, neg_optb=0, neg_optc=0, neg_optd=0):
 
         if pos_opta is not None or pos_optb is not None or pos_optc is not None or pos_optd is not None:
             pos_out = next((pos for pos in [pos_opta, pos_optb, pos_optc, pos_optd] if pos), None)
@@ -271,7 +277,12 @@ class re_korz_image:
     @classmethod
     def INPUT_TYPES(cls):
         return {
-            "optional": {f"img_opt{l}": ("IMAGE", ) for l in "abcd"},
+            "optional": {
+                "img_opta": ("IMAGE",),
+                "img_optb": ("IMAGE",),
+                "img_optc": ("IMAGE",),
+                "img_optd": ("IMAGE",),
+                },
             "required": {}
         }
 
@@ -282,116 +293,93 @@ class re_korz_image:
         "IMAGE", 
 
     )
-    FUNCTION = "check_img"
+    FUNCTION = "checkimg"
     CATEGORY = "utils/Recourse"
 
-    def check_img(self, img_opta=0, img_optb=0, img_optc=0, img_optd=0):
+    def checkimg(self,img_opta=0, img_optb=0, img_optc=0, img_optd=0, ):
 
-        if img_opta is not None or img_optb is not None or img_optc is not None or img_optd is not None:
-            img_out = next((img for img in [img_opta, img_optb, img_optc, img_optd] if img), None)
+        if img_opta is not None:
+                img_out = img_opta
+        elif img_optb is not None:
+                img_out = img_optb
+        elif img_optc is not None:
+                img_out = img_optc
+        elif img_optd is not None:
+                img_out = img_optd
         else:
             img_out = None
 
         return (img_out,)
 
-def fork_farm(type: str):
-    class fork:
-        @classmethod
-        def INPUT_TYPES(s):
-            return {
-                "optional": {
-                    "selector_taboo": ("INT", {"default": 1, "min": 1, "max": 10000,}),
-                    type: (type.upper(), ),
-                },
-                "required": {}
-            }
-
-        RETURN_TYPES = tuple([type.upper()] * 4)
-        RETURN_NAMES = tuple([f"OUT_{l.upper()}" for l in get_alphabet(4)])
-        FUNCTION = "forkd"
-
-        CATEGORY = "utils/Recourse"
-
-<<<<<<< HEAD
-        def forkd(selector_taboo, model):
-            model[f"opt_{get_alphabet(4)[selector_taboo]}"] if selector_taboo < 5 else None
-=======
-        def forkd(selected_model, model):
-            model[f"opt_{get_alphabet(4)[selected_model]}"] if selected_model < 5 else None
->>>>>>> parent of 89a5acd (Update selector.py)
-    
-    return fork
-
 
 # ltdrdata 🤍
-# class fork:
-#     @classmethod
-#     def INPUT_TYPES(s):
-#         return {
-#             "optional": {
-#                 "selector": 
-#                     ("INT", {"default": 1, "min": 1, "max": 10000,}),
-#                 "model": ("MODEL",),
-#             },
-#             "required": {}
-#         }
+class fork:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "optional": {
+                "switch": 
+                    ("INT", {"default": 1, "min": 1, "max": 10000,}),
+                "model": ("MODEL",),
+            },
+            "required": {}
+        }
 
-#     RETURN_TYPES = "MODEL", "MODEL", "MODEL", "MODEL",
-#     RETURN_NAMES = "OUT_A", "OUT_B", "OUT_C", "OUT_D", 
-#     FUNCTION = "forkd"
+    RETURN_TYPES = "MODEL", "MODEL", "MODEL", "MODEL",
+    RETURN_NAMES = "OUT_A", "OUT_B", "OUT_C", "OUT_D", 
+    FUNCTION = "forkd"
 
-#     CATEGORY = "utils/Recourse"
+    CATEGORY = "utils/Recourse"
 
-<<<<<<< Updated upstream
-#     def forkd(selector, model):
-=======
     def forkd(self, switch, model):
->>>>>>> Stashed changes
 
-#         [model_opta, model_optb, model_optc, model_optd, model_optd][opt_selector] if selector < 5 else None
+        if switch == 1:
+            return (model, None, None, None)
+        elif switch == 2:
+            return (None, model, None, None)
+        elif switch == 3:
+            return (None, None, model, None)
+        elif switch == 4 or 5:
+            return (None, None, None, model)
+        else:
+            return (None, None, None, None)
 
+class fork_clip:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "optional": {
+                "switch": 
+                    ("INT", {"default": 1, "min": 1, "max": 10000,}),
+                "clip": ("CLIP",),
+            },
+            "required": {}
+        }
 
-# class fork_clip:
-#     @classmethod
-#     def INPUT_TYPES(s):
-#         return {
-#             "optional": {
-#                 "selector": 
-#                     ("INT", {"default": 1, "min": 1, "max": 10000,}),
-#                 "clip": ("CLIP",),
-#             },
-#             "required": {}
-#         }
+    RETURN_TYPES = "CLIP", "CLIP", "CLIP", "CLIP",
+    RETURN_NAMES = "OUT_A", "OUT_B", "OUT_C", "OUT_D", 
+    FUNCTION = "forkd"
 
-#     RETURN_TYPES = "CLIP", "CLIP", "CLIP", "CLIP",
-#     RETURN_NAMES = "OUT_A", "OUT_B", "OUT_C", "OUT_D", 
-#     FUNCTION = "forkd"
+    CATEGORY = "utils/Recourse"
 
-<<<<<<< Updated upstream
-#     CATEGORY = "utils/Recourse"
-=======
     def forkd(self, switch, clip):
->>>>>>> Stashed changes
 
-#     def forkd(switch, clip):
-
-#         [clip_opta, clip_optb, clip_optc, clip_optd, clip_optd][selector] if selector < 5 else None
+        if switch == 1:
+            return (clip, None, None, None)
+        elif switch == 2:
+            return (None, clip, None, None)
+        elif switch == 3:
+            return (None, None, clip, None)
+        elif switch == 4 or 5:
+            return (None, None, None, clip)
+        else:
+            return (None, None, None, None)
 
 class unite:
     @classmethod
     def INPUT_TYPES(s):
         return {
             "optional": {
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-                "selector": ("INT", {"default": 1, "min": 1, "max": 10000}),
-=======
-                "model_selection": ("INT", {"default": 1, "min": 1, "max": 10000}),
->>>>>>> parent of 89a5acd (Update selector.py)
-                **{f"latent_opt{l}": ("LATENT", ) for l in get_alphabet(4)}
-            },
-            "required": {}
-=======
                 "latent1": ("LATENT",),
                 "latent2": ("LATENT",),
                 "latent3": ("LATENT",),
@@ -401,7 +389,6 @@ class unite:
             },
             "required": {
             }
->>>>>>> Stashed changes
         }
 
     RETURN_TYPES = "LATENT",
@@ -410,15 +397,6 @@ class unite:
 
     CATEGORY = "utils/Recourse"
 
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-    def unity(selector, latent_opta, latent_optb, latent_optc, latent_optd):
-        (latent_opta, latent_optb, latent_optc, latent_optd)[min(4, selector)]
-=======
-    def unity(model_selection, latent_opta, latent_optb, latent_optc, latent_optd):
-        (latent_opta, latent_optb, latent_optc, latent_optd)[min(4, model_selection)]
->>>>>>> parent of 89a5acd (Update selector.py)
-=======
 
     def unity(self, **kwargs):
         latent_out = f"latent{int(kwargs['selection'])}"
@@ -430,24 +408,23 @@ class unite:
             return (kwargs['latent1'],)
         
 
->>>>>>> Stashed changes
 
 NODE_CLASS_MAPPINGS = { "Selector": selectah,
                         "Recourse": re_korz,
                         "RecourseCkpt": re_korz_ckpt,
                         "Recourse+/-": re_korz_polarity,
                         "RecourseImage": re_korz_image,
-                        "Fork": fork_farm("model"),
-                        "ForkClip": fork_farm("clip"),
+                        "Fork": fork,
+                        "ForkClip": fork_clip,
                         "Unite": unite,
                       }
 
 NODE_DISPLAY_NAME_MAPPINGS = { "Selector": "Selector...       ⠑⠭⠙⠽⠎⠁",
                                 "Recourse": "Recourse...       ⠑⠭⠙⠽⠎⠁", 
-                                "RecourseCkpt": "RecourseCheck...  ⠑⠭⠙⠽⠎⠁",
-                                "Recourse+/-": "RecoursePolar...  ⠑⠭⠙⠽⠎⠁",
-                                "RecourseImage": "RecourseImage...  ⠑⠭⠙⠽⠎⠁",
-                                "Fork": "Fork (Model)...   ⠑⠭⠙⠽⠎⠁",
-                                "ForkClip": "Fork (Clip)...    ⠑⠭⠙⠽⠎⠁",
-                                "Unite": "Unite (Latent)...  ⠑⠭⠙⠽⠎⠁",
+                                "RecourseCkpt": "RecourseCheck...",
+                                "Recourse+/-": "RecoursePolar...",
+                                "RecourseImage": "RecourseImage...",
+                                "Fork": "Fork (Model)...",
+                                "ForkClip": "Fork (Clip)...",
+                                "Unite": "Unite (Latent)...",
                             }
