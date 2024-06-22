@@ -383,7 +383,7 @@ class unite:
                 "latent1": ("LATENT",),
                 "latent2": ("LATENT",),
                 "latent3": ("LATENT",),
-                "laten4": ("LATENT",),
+                "latent4": ("LATENT",),
                 "selection": 
                      ("INT", {"default": 1, "min": 1, "max": 100,}),
             },
