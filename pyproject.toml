@@ -2,7 +2,7 @@
 name = "comfyui-selector"
 description = "𝌸 EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 version = "2.0.0"
-license = { file = "LICENSE" }
+license = "LICENSE"
 
 [project.urls]
 Repository = "https://github.com/exdysa/comfyui-selector"
