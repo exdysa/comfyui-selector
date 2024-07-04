@@ -362,20 +362,20 @@ class unite:
 
 
 
-NODE_CLASS_MAPPINGS = { "Selector": selectah,
-                        "Recourse": re_korz_ckpt,
-                        "RecourseConditioning": re_korz_polarity,
-                        "RecourseImage": re_korz_image,
-                        "Fork": fork,
-                        "ForkClip": fork_clip,
-                        "Unite": unite,
+NODE_CLASS_MAPPINGS = { "Selector...": selectah,
+                        "Recourse...": re_korz_ckpt,
+                        "RecourseConditioning...": re_korz_polarity,
+                        "RecourseImage...": re_korz_image,
+                        "Fork...": fork,
+                        "ForkClip...": fork_clip,
+                        "Unite...": unite,
                       }
 
-NODE_DISPLAY_NAME_MAPPINGS = { "Selector": "Selector",
-                                "Recourse": "Recourse", 
-                                "RecourseConditioning": "RecourseConditioning",
-                                "RecourseImage": "RecourseImage",
-                                "Fork": "Fork (Model)",
-                                "ForkClip": "Fork (Clip)",
-                                "Unite": "Unite (Latent)",
+NODE_DISPLAY_NAME_MAPPINGS = { "Selector": "Selector...",
+                                "Recourse": "Recourse...", 
+                                "RecourseConditioning": "RecourseConditioning...",
+                                "RecourseImage": "RecourseImage...",
+                                "Fork": "Fork (Model)...",
+                                "ForkClip": "Fork (Clip)...",
+                                "Unite": "Unite (Latent)...",
                             }
