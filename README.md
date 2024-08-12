@@ -1,7 +1,8 @@
 # comfyui-selector
  
+> 簡單的離線節點，用於ComfyUI。[選擇器]預設值[資源]開關
 > Quick and dirty nodes for [ComfyUI](https://github.com/comfyanonymous/comfyui)
-> 
+> 這些節點將會在images/utilities下列出，或者你可以輸入“.”來在搜索/雙擊菜單中的網格上找到它。
 > The nodes will be listed under images/utils, or you can type ```.``` to find it in search/double-click menu on the grid. 
  
 > [!Note]
