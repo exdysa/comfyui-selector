@@ -4,7 +4,7 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "2.0.0"
+@version: "3.0.0"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
@@ -16,8 +16,28 @@ import comfy.model_base
 import comfy.model_management
 import comfy.model_sampling
 
+MODEL_TO_TYPE = {
+    "StableCascade_B": 8,
+    "StableCascade_C": 7,
+    "SD3": 6,
+    "HunyuanDiT": 5,
+    "AuraFlow": 4,
+    "Flux": 3,
+    "SDXL": 2,
+    "SDXL_instructpix2pix": 2,
+    "SDXLRefiner": 2,
+    "BaseModel": 1,
+}
+
+MAX_RECOURSE_INPUTS = 8
+SELECTOR_DESC = "Directs flow. Coordinated by model type output from RecourseCheckpoint."
+RECOURSE_DESC = "Ensures connection. Output first active input by type."
+SELECTOR_CATEGORY = "utils/Selector_Recourse"
+
+# # # SELECTOR_LATENT_DESC = "UNIVERSAL/SD1 SDXL,FLUX,AURAFLOW,HUNYUANDIT ,  SD3 STABLE_CASCADE"
+
+
 class selectah:
-    
     # dimensions sourced from: https://arxiv.org/abs/2307.01952
     # & https://github.com/Stability-AI/generative-models
     RATIO = [
@@ -37,6 +57,7 @@ class selectah:
         ("4:3___XL 1152x896", 1152, 896),
         ("18:13_XL 1152x832", 1152, 832),
         ("3:2___XL 1216x832", 1216, 832),
+        ("72:32_XL 1232x832", 1232, 832),
         ("5:3___XL 1280x768", 1280, 768),
         ("7:4___XL 1344x768", 1344, 768),
         ("21:11_XL 1344x704", 1344, 704),
@@ -57,64 +78,107 @@ class selectah:
     def INPUT_TYPES(cls):
         aspect_ratio_titles = [title for title, res1, res2 in cls.RATIO]
         rotation = ("landscape", "portrait")
-        
+
         return {
             "required": {
-                "aR": (aspect_ratio_titles,
-                    {"default": ("1:1___XL 1024x1024")}),
+                "aR": (aspect_ratio_titles, {"default": ("1:1___XL 1024x1024")}),
                 "rotation": (rotation,),
             },
             "optional": {
-                "batch": 
-                    ("INT", {"default": 1, "min": 1, "max": 10000,}),
-                "steps": 
-                    ("INT", {"default": 20, "min": 1, "max": 10000,}),
-                "refiner_steps":
-                    ("INT", {"default": 20, "min": 1, "max": 10000,}),
-                "cfg": ("FLOAT",{
-                         "default": 1.00,
-                         "min": 0.00,
-                         "max": 100.00,
-                         "step": 0.01,
-                         "round": 0.01,
-                }),
-                "refiner_cfg": ("FLOAT", {
-                        "default": 1.00,
-                        "min": 0.00,
-                        "max": 100.00,
-                        "step": 0.01,
-                        "round": 0.01,
-                }),
-                "str_denoise": ("FLOAT", {
-                        "default": 0.500,
-                        "min": 0.00,
-                        "max": 1000.00,
-                        "step": 0.01,
-                        "round": 0.01,
-                 }),
-                "scale_factor": ("FLOAT", {
-                        "default": 2.00,
-                        "min": 0.00,
-                        "max": 1000.00,
-                        "step": 0.01,
-                        "round": 0.01,
-                }),
-                "variation_str": ("FLOAT", {
+                "batch": (
+                    "INT",
+                    {
+                        "default": 1,
+                        "min": -10000,
+                        "max": 10000,
+                    },
+                ),
+                "steps": (
+                    "INT",
+                    {
+                        "default": 20,
+                        "min": -10000,
+                        "max": 10000,
+                    },
+                ),
+                "refiner_steps": (
+                    "INT",
+                    {
+                        "default": 0,
+                        "min": -10000,
+                        "max": 10000,
+                    },
+                ),
+                "cfg": (
+                    "FLOAT",
+                    {
+                        "default": 1.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
+                ),
+                "refiner_cfg": (
+                    "FLOAT",
+                    {
+                        "default": 1.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
+                ),
+                "str_denoise": (
+                    "FLOAT",
+                    {
+                        "default": 1.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
+                ),
+                "scale_factor": (
+                    "FLOAT",
+                    {
+                        "default": 2.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
+                ),
+                "variation_str": (
+                    "FLOAT",
+                    {
                         "default": 0.000,
                         "min": 0.000,
                         "max": 1000.000,
                         "step": 0.001,
                         "round": 0.001,
-                }),
+                    },
+                ),
                 "sampler": (comfy.samplers.KSampler.SAMPLERS,),
-                "scheduler": (comfy.samplers.KSampler.SCHEDULERS,)
-            }
-        }   
+                "scheduler": (comfy.samplers.KSampler.SCHEDULERS,),
+            },
+        }
+
     RETURN_TYPES = (
-        "INT", "INT", "INT", "INT", "INT", "FLOAT",
-        "FLOAT", "FLOAT", "FLOAT", "FLOAT", comfy.samplers.KSampler.SAMPLERS,
-        comfy.samplers.KSampler.SCHEDULERS,)
-        
+        "INT",
+        "INT",
+        "INT",
+        "INT",
+        "INT",
+        "FLOAT",
+        "FLOAT",
+        "FLOAT",
+        "FLOAT",
+        "FLOAT",
+        comfy.samplers.KSampler.SAMPLERS,
+        comfy.samplers.KSampler.SCHEDULERS,
+    )
+
     RETURN_NAMES = (
         "WIDTH",
         "HEIGHT",
@@ -137,15 +201,44 @@ class selectah:
             if title == aR:
                 if rotation == "portrait":
                     width, height = height, width  # Swap for portrait orientation
-                return (width, height, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale_factor, variation_str, sampler, scheduler)
-        return (None, None, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale_factor, variation_str, sampler, scheduler)  # In case the aspect ratio is not found
+                return (
+                    width,
+                    height,
+                    batch,
+                    steps,
+                    refiner_steps,
+                    cfg,
+                    refiner_cfg,
+                    str_denoise,
+                    scale_factor,
+                    variation_str,
+                    sampler,
+                    scheduler,
+                )
+        return (
+            None,
+            None,
+            batch,
+            steps,
+            refiner_steps,
+            cfg,
+            refiner_cfg,
+            str_denoise,
+            scale_factor,
+            variation_str,
+            sampler,
+            scheduler,
+        )  # In case the aspect ratio is not found
+
 
 # pythongossss 🤍
 class ne_ting(str):
     def __ne__(self, __value: object) -> bool:
         return False
 
+
 anyting = ne_ting("*")
+
 
 # ltdrdata 🤍
 class re_korz:
@@ -155,21 +248,37 @@ class re_korz:
     @classmethod
     def INPUT_TYPES(cls):
         return {
-            "optional": {"input": (anyting,), "fallback": (anyting,),},
-            "required": {}
+            "optional": {
+                "input": (anyting,),
+                "fallback": (anyting,),
+            },
+            "required": {},
         }
 
-    RETURN_TYPES = (anyting, "BOOLEAN", )
-    RETURN_NAMES = ("OUTPUT", "BOO")
+    RETURN_TYPES = (
+        anyting,
+        "BOOLEAN",
+    )
+    RETURN_NAMES = (
+        "OUTPUT",
+        "BOOL",
+    )
     FUNCTION = "checkit"
-
-    CATEGORY = "utils/Recourse"
+    CATEGORY = SELECTOR_CATEGORY
+    DESCRIPTION = RECOURSE_DESC
 
     def checkit(self, input=None, fallback=None):
         if input is None:
-            return (fallback, False, )
+            return (
+                fallback,
+                False,
+            )
         else:
-            return (input, True, )
+            return (
+                input,
+                True,
+            )
+
 
 class re_korz_ckpt:
     def __init__(self):
@@ -186,45 +295,43 @@ class re_korz_ckpt:
                 "clip_optc": ("CLIP",),
                 "vae_opta": ("VAE",),
                 "vae_optb": ("VAE",),
-                },
-            "required": {}
+            },
+            "required": {},
         }
 
     RETURN_TYPES = (
-        "MODEL","CLIP", "VAE", "INT"
-        )
+        "MODEL",
+        "CLIP",
+        "VAE",
+        "INT",
+    )
     RETURN_NAMES = (
-        "MODEL", "CLIP", "VAE", "M_TYPE"
-
+        "MODEL",
+        "CLIP",
+        "VAE",
+        "MODEL_TYPE",
     )
     FUNCTION = "checkckpt"
-    CATEGORY = "utils/Recourse"
+    CATEGORY = SELECTOR_CATEGORY
+    DESCRIPTION = RECOURSE_DESC
 
-    def checkckpt(self, model_opta=None, model_optb=None, clip_opta=None, clip_optb=None, clip_optc=None, vae_opta=None, vae_optb=None,m_type=1):
-        
-        model_out = next((model for model in [model_opta, model_optb] if getattr(model, 'model_options', None) is not None), None)
-        
-        if clip_opta is not None or clip_optb is not None or clip_optc is not None:
-            clip_out = next((clip for clip in [clip_opta, clip_optb, clip_optc] if clip), None)
-        else:
-            clip_out = None
+    def checkckpt(self, model_opta=None, model_optb=None, clip_opta=None, clip_optb=None, clip_optc=None, vae_opta=None, vae_optb=None, model_type=1):
+        model_out = next((model for model in [model_opta, model_optb] if model), None)
+        clip_out = next((clip for clip in [clip_opta, clip_optb, clip_optc] if clip), None)
+        vae_out = next((vae for vae in [vae_opta, vae_optb] if vae), None)
 
-        if vae_opta is not None or vae_optb is not None:
-            vae_out = next((vae for vae in [vae_opta, vae_optb] if vae), None)
-        else:
-            vae_out = None
+        model_id = type(model_out.model).__name__
+        print(f"{model_id} dddd")
+        print(type(model_out.model).__name__)
+        model_type = MODEL_TO_TYPE.get(model_id)
+        print(model_type)
+        return (
+            model_out,
+            clip_out,
+            vae_out,
+            model_type,
+        )
 
-        if model_out is not None :
-            if isinstance(model_out, comfy.model_base.SDXL) or isinstance(model_out, comfy.model_base.SDXL_instructpix2pix):
-                m_type=2
-            elif isinstance(model_out, comfy.model_base.SDXLRefiner):
-                m_type=4
-            elif isinstance(model_out, comfy.model_base.SD3):
-                m_type=3
-            else:
-                m_type=1
-        
-        return (model_out,clip_out,vae_out,m_type)
 
 class re_korz_polarity:
     def __init__(self):
@@ -242,33 +349,31 @@ class re_korz_polarity:
                 "neg_optb": ("CONDITIONING",),
                 "neg_optc": ("CONDITIONING",),
                 "neg_optd": ("CONDITIONING",),
-                },
-            "required": {}
+            },
+            "required": {},
         }
 
     RETURN_TYPES = (
-        "CONDITIONING","CONDITIONING",
-        )
-    RETURN_NAMES = (
-        "CONDITION+", "CONDITION-", 
-
+        "CONDITIONING",
+        "CONDITIONING",
     )
+    RETURN_NAMES = (
+        "CONDITION+",
+        "CONDITION-",
+    )
+    CATEGORY = SELECTOR_CATEGORY
+    DESCRIPTION = RECOURSE_DESC
     FUNCTION = "checkcond"
-    CATEGORY = "utils/Recourse"
 
     def checkcond(self, pos_opta=0, pos_optb=0, pos_optc=0, pos_optd=0, neg_opta=0, neg_optb=0, neg_optc=0, neg_optd=0):
+        pos_out = next((pos for pos in [pos_opta, pos_optb, pos_optc, pos_optd] if pos), None)
+        neg_out = next((neg for neg in [neg_opta, neg_optb, neg_optc, neg_optd] if neg), None)
 
-        if pos_opta is not None or pos_optb is not None or pos_optc is not None or pos_optd is not None:
-            pos_out = next((pos for pos in [pos_opta, pos_optb, pos_optc, pos_optd] if pos), None)
-        else:
-            pos_out = None
+        return (
+            pos_out,
+            neg_out,
+        )
 
-        if neg_opta is not None or neg_optb is not None or neg_optc is not None or neg_optd is not None:
-            neg_out = next((neg for neg in [neg_opta, neg_optb, neg_optc, neg_optd] if neg), None)
-        else:
-            neg_out = None
-
-        return (pos_out,neg_out)
 
 class re_korz_image:
     def __init__(self):
@@ -282,34 +387,19 @@ class re_korz_image:
                 "img_optb": ("IMAGE",),
                 "img_optc": ("IMAGE",),
                 "img_optd": ("IMAGE",),
-                },
-            "required": {}
+            },
+            "required": {},
         }
 
-    RETURN_TYPES = (
-        "IMAGE",
-        )
-    RETURN_NAMES = (
-        "IMAGE", 
-
-    )
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("IMAGE",)
     FUNCTION = "checkimg"
-    CATEGORY = "utils/Recourse"
+    CATEGORY = SELECTOR_CATEGORY
+    DESCRIPTION = RECOURSE_DESC
 
-    def checkimg(self,img_opta=0, img_optb=0, img_optc=0, img_optd=0, ):
-
-        if img_opta is not None:
-                img_out = img_opta
-        elif img_optb is not None:
-                img_out = img_optb
-        elif img_optc is not None:
-                img_out = img_optc
-        elif img_optd is not None:
-                img_out = img_optd
-        else:
-            img_out = None
-
-        return (img_out,)
+    def checkimg(self, **kwargs):
+        image_out = next(kwargs[x] for x in kwargs if x is not None)
+        return (image_out,)
 
 
 # ltdrdata 🤍
@@ -318,62 +408,106 @@ class fork:
     def INPUT_TYPES(s):
         return {
             "optional": {
-                "switch": 
-                    ("INT", {"default": 1, "min": 1, "max": 10000,}),
                 "model": ("MODEL",),
             },
-            "required": {}
+            "required": {
+                "model_type": (
+                    "INT",
+                    {
+                        "default": 1,
+                        "min": 1,
+                        "max": MAX_RECOURSE_INPUTS,
+                    },
+                ),
+            },
         }
 
-    RETURN_TYPES = "MODEL", "MODEL", "MODEL", "MODEL",
-    RETURN_NAMES = "OUT_A", "OUT_B", "OUT_C", "OUT_D", 
+    RETURN_TYPES = (
+        "MODEL",
+        "MODEL",
+        "MODEL",
+        "MODEL",
+        "MODEL",
+        "MODEL",
+        "MODEL",
+        "MODEL",
+    )
+    RETURN_NAMES = (
+        "OUT_A",
+        "OUT_B",
+        "OUT_C",
+        "OUT_D",
+        "OUT_E",
+        "OUT_F",
+        "OUT_G",
+        "OUT_H",
+    )
     FUNCTION = "forkd"
 
-    CATEGORY = "utils/Recourse"
+    CATEGORY = SELECTOR_CATEGORY
+    DESCRIPTION = SELECTOR_DESC
 
-    def forkd(self, switch, model):
+    def forkd(self, model_type, model):
+        result = [None] * MAX_RECOURSE_INPUTS
+        if 1 <= model_type <= MAX_RECOURSE_INPUTS:
+            result[model_type - 1] = model
+        return tuple(
+            result,
+        )
 
-        if switch == 1:
-            return (model, None, None, None)
-        elif switch == 2:
-            return (None, model, None, None)
-        elif switch == 3:
-            return (None, None, model, None)
-        elif switch == 4 or 5:
-            return (None, None, None, model)
-        else:
-            return (None, None, None, None)
 
 class fork_clip:
     @classmethod
     def INPUT_TYPES(s):
         return {
             "optional": {
-                "switch": 
-                    ("INT", {"default": 1, "min": 1, "max": 10000,}),
                 "clip": ("CLIP",),
             },
-            "required": {}
+            "required": {
+                "model_type": (
+                    "INT",
+                    {
+                        "default": 1,
+                        "min": 1,
+                        "max": MAX_RECOURSE_INPUTS,
+                    },
+                ),
+            },
         }
 
-    RETURN_TYPES = "CLIP", "CLIP", "CLIP", "CLIP",
-    RETURN_NAMES = "OUT_A", "OUT_B", "OUT_C", "OUT_D", 
-    FUNCTION = "forkd"
+    RETURN_TYPES = (
+        "CLIP",
+        "CLIP",
+        "CLIP",
+        "CLIP",
+        "CLIP",
+        "CLIP",
+        "CLIP",
+        "CLIP",
+    )
+    RETURN_NAMES = (
+        "OUT_A",
+        "OUT_B",
+        "OUT_C",
+        "OUT_D",
+        "OUT_E",
+        "OUT_F",
+        "OUT_G",
+        "OUT_H",
+    )
+    FUNCTION = "select_clip"
 
-    CATEGORY = "utils/Recourse"
+    CATEGORY = SELECTOR_CATEGORY
+    DESCRIPTION = SELECTOR_DESC
 
-    def forkd(self, switch, clip):
+    def select_clip(self, model_type, clip):
+        result = [None] * MAX_RECOURSE_INPUTS
+        if 1 <= model_type <= MAX_RECOURSE_INPUTS:
+            result[model_type - 1] = clip
+        return tuple(
+            result,
+        )
 
-        if switch == 1:
-            return (clip, None, None, None)
-        elif switch == 2:
-            return (None, clip, None, None)
-        elif switch == 3:
-            return (None, None, clip, None)
-        elif switch == 4 or 5:
-            return (None, None, None, clip)
-        else:
-            return (None, None, None, None)
 
 class unite:
     @classmethod
@@ -384,47 +518,245 @@ class unite:
                 "latent2": ("LATENT",),
                 "latent3": ("LATENT",),
                 "latent4": ("LATENT",),
-                "selection": 
-                     ("INT", {"default": 1, "min": 1, "max": 100,}),
             },
             "required": {
-            }
+                "model_type": (
+                    "INT",
+                    {
+                        "default": 1,
+                        "min": 1,
+                        "max": MAX_RECOURSE_INPUTS,
+                    },
+                ),
+            },
         }
 
-    RETURN_TYPES = "LATENT",
-    RETURN_NAMES = "LATENT", 
+    RETURN_TYPES = ("LATENT",)
+    RETURN_NAMES = ("LATENT",)
     FUNCTION = "unity"
 
-    CATEGORY = "utils/Recourse"
+    CATEGORY = SELECTOR_CATEGORY
+    DESCRIPTION = SELECTOR_DESC
+
+    def unity(
+        self,
+        model_type,
+        latent1=None,
+        latent2=None,
+        latent3=None,
+        latent4=None,
+    ):
+        latent_list = [
+            latent1,
+            latent2,
+            latent2,
+            latent2,
+            latent2,
+            latent3,
+            latent4,
+            latent4,
+        ]
+        latent_type = model_type - 1
+        print(latent_type)
+        latent_input = latent_list[latent_type]
+
+        return (latent_input,)
 
 
-    def unity(self, **kwargs):
-        latent_out = f"latent{int(kwargs['selection'])}"
+class unite_model:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "optional": {
+                "model1": ("MODEL",),
+                "model2": ("MODEL",),
+                "model3": ("MODEL",),
+                "model4": ("MODEL",),
+                "model5": ("MODEL",),
+                "model6": ("MODEL",),
+                "model7": ("MODEL",),
+                "model8": ("MODEL",),
+            },
+            "required": {
+                "model_type": (
+                    "INT",
+                    {
+                        "default": 1,
+                        "min": 1,
+                        "max": MAX_RECOURSE_INPUTS,
+                    },
+                ),
+            },
+        }
 
-        if latent_out in kwargs:
-            return (kwargs[latent_out],)
-        else:
-            print(f"selection invalid - indexing error")
-            return (kwargs['latent1'],)
-        
+    RETURN_TYPES = ("MODEL",)
+    RETURN_NAMES = ("MODEL",)
+    FUNCTION = "select_model"
+
+    CATEGORY = SELECTOR_CATEGORY
+    DESCRIPTION = SELECTOR_DESC
+
+    def select_model(self, **kwargs):
+        model_out = f"model{int(kwargs['model_type'])}"
+        return (kwargs[model_out],) if model_out in kwargs else (None,)
 
 
-NODE_CLASS_MAPPINGS = { "Selector": selectah,
-                        "Recourse": re_korz,
-                        "RecourseCkpt": re_korz_ckpt,
-                        "Recourse+/-": re_korz_polarity,
-                        "RecourseImage": re_korz_image,
-                        "Fork": fork,
-                        "ForkClip": fork_clip,
-                        "Unite": unite,
-                      }
+class unite_clip:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "optional": {
+                "clip1": ("CLIP",),
+                "clip2": ("CLIP",),
+                "clip3": ("CLIP",),
+                "clip4": ("CLIP",),
+                "clip5": ("CLIP",),
+                "clip6": ("CLIP",),
+                "clip7": ("CLIP",),
+                "clip8": ("CLIP",),
+            },
+            "required": {
+                "model_type": (
+                    "INT",
+                    {
+                        "default": 1,
+                        "min": 1,
+                        "max": MAX_RECOURSE_INPUTS,
+                    },
+                ),
+            },
+        }
 
-NODE_DISPLAY_NAME_MAPPINGS = { "Selector": "Selector...       ⠑⠭⠙⠽⠎⠁",
-                                "Recourse": "Recourse...       ⠑⠭⠙⠽⠎⠁", 
-                                "RecourseCkpt": "RecourseCheck...",
-                                "Recourse+/-": "RecoursePolar...",
-                                "RecourseImage": "RecourseImage...",
-                                "Fork": "Fork (Model)...",
-                                "ForkClip": "Fork (Clip)...",
-                                "Unite": "Unite (Latent)...",
-                            }
+    RETURN_TYPES = ("CLIP",)
+    RETURN_NAMES = ("CLIP",)
+    FUNCTION = "unity_clip"
+
+    CATEGORY = SELECTOR_CATEGORY
+    DESCRIPTION = SELECTOR_DESC
+
+    def unity_clip(self, **kwargs):
+        print(kwargs["model_type"])
+        clip_out = f"clip{int(kwargs['model_type'])}"
+        return (kwargs[clip_out],) if clip_out in kwargs else (None,)
+
+
+class unite_conditioning:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "optional": {
+                "conditioning1": ("CONDITIONING",),
+                "conditioning2": ("CONDITIONING",),
+                "conditioning3": ("CONDITIONING",),
+                "conditioning4": ("CONDITIONING",),
+                "conditioning5": ("CONDITIONING",),
+                "conditioning6": ("CONDITIONING",),
+                "conditioning7": ("CONDITIONING",),
+                "conditioning8": ("CONDITIONING",),
+            },
+            "required": {
+                "model_type": (
+                    "INT",
+                    {
+                        "default": 1,
+                        "min": 1,
+                        "max": MAX_RECOURSE_INPUTS,
+                    },
+                ),
+            },
+        }
+
+    RETURN_TYPES = ("CONDITIONING",)
+    RETURN_NAMES = ("CONDITIONING",)
+    FUNCTION = "select_conditioning"
+
+    CATEGORY = SELECTOR_CATEGORY
+    DESCRIPTION = SELECTOR_DESC
+
+    def select_conditioning(self, **kwargs):
+        conditioning_out = f"conditioning{int(kwargs['model_type'])}"
+        return (kwargs[conditioning_out],) if conditioning_out in kwargs else (None,)
+
+
+class fork_conditioning:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "optional": {
+                "conditioning": ("CONDITIONING",),
+            },
+            "required": {
+                "model_type": (
+                    "INT",
+                    {
+                        "default": 1,
+                        "min": 1,
+                        "max": MAX_RECOURSE_INPUTS,
+                    },
+                ),
+            },
+        }
+
+    RETURN_TYPES = (
+        "CONDITIONING",
+        "CONDITIONING",
+        "CONDITIONING",
+        "CONDITIONING",
+        "CONDITIONING",
+        "CONDITIONING",
+        "CONDITIONING",
+        "CONDITIONING",
+    )
+    RETURN_NAMES = (
+        "OUT_A",
+        "OUT_B",
+        "OUT_C",
+        "OUT_D",
+        "OUT_E",
+        "OUT_F",
+        "OUT_G",
+        "OUT_H",
+    )
+    FUNCTION = "select_condition"
+
+    CATEGORY = SELECTOR_CATEGORY
+    DESCRIPTION = SELECTOR_DESC
+
+    def select_condition(self, model_type, conditioning):
+        result = [None] * MAX_RECOURSE_INPUTS
+        if 1 <= model_type <= MAX_RECOURSE_INPUTS:
+            result[model_type - 1] = conditioning
+        return tuple(
+            result,
+        )
+
+
+NODE_CLASS_MAPPINGS = {
+    "Selector": selectah,
+    "Recourse": re_korz,
+    "RecourseCkpt": re_korz_ckpt,
+    "Recourse+-": re_korz_polarity,
+    "RecourseImage": re_korz_image,
+    "Fork": fork,
+    "ForkClip": fork_clip,
+    "Unite": unite,
+    "UniteModel": unite_model,
+    "UniteClip": unite_clip,
+    "Unite+-": unite_conditioning,
+    "Fork+-": fork_conditioning,
+}
+
+NODE_DISPLAY_NAME_MAPPINGS = {
+    "Selector": "Selector...",
+    "Recourse": "Recourse...",
+    "RecourseCkpt": "RecourseCheck...",
+    "Recourse+-": "RecoursePolar...",
+    "RecourseImage": "RecourseImage...",
+    "Fork": "Fork (Model)...",
+    "ForkClip": "Fork (Clip)...",
+    "Unite": "Unite (Latent)...",
+    "UniteModel": "Unite (Model)...",
+    "UniteClip": "Unite (Clip)...",
+    "Unite+-": "Unite (Polarity)...",
+    "Fork+-": "Fork (Polarity)...",
+}
