@@ -1,8 +1,8 @@
 [project]
-name = "comfyui-selector"
-description = "𝌸 EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
-version = "2.0.1"
-license = { file = "LICENSE" }
+name        = "comfyui-selector"
+description = "Selector and Recourse. Presets & failsafes. Work flow. EXDYSA"
+version     = "3.0.0"
+license     = { file = "LICENSE" }
 
 [project.urls]
 Repository = "https://github.com/exdysa/comfyui-selector"
@@ -11,4 +11,4 @@ Repository = "https://github.com/exdysa/comfyui-selector"
 [tool.comfy]
 PublisherId = "exdysa"
 DisplayName = "comfyui-selector"
-Icon = ""
+Icon        = ""
