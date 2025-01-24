@@ -4,7 +4,7 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "3.0.0"
+@version: "3.1.0"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
@@ -33,8 +33,22 @@ MAX_RECOURSE_INPUTS = 8
 SELECTOR_DESC = "Directs flow. Coordinated by model type output from RecourseCheckpoint."
 RECOURSE_DESC = "Ensures connection. Output first active input by type."
 SELECTOR_CATEGORY = "utils/Selector_Recourse"
+TYPE_DESC = "SD1, SDXL, FLUX, AURAFLOW, HUNYUANDIT, SD3, STABLE_CASCADE"
 
-# # # SELECTOR_LATENT_DESC = "UNIVERSAL/SD1 SDXL,FLUX,AURAFLOW,HUNYUANDIT ,  SD3 STABLE_CASCADE"
+MODEL_1 = "This port requires MODEL to send the MODEL_TYPE to other nodes."
+MODEL_2 = "This port is activated in case MODEL_1 has no signal."
+UNITE_PORT = "An input port is activated based on the model_type number."
+FORK_PORT = "An output port is activated based on the model_type number."
+RECOURSE_PORT = "The lowest number port with an active signal is sent to output."
+
+OUTPUT_0 = "Active when Stable Diffusion 1 is detected"
+OUTPUT_1 = "Active when Stable Diffusion XL/Refiner/P2P is detected"
+OUTPUT_2 = "Active when Flux is detected"
+OUTPUT_3 = "Active when Auraflow is detected"
+OUTPUT_4 = "Active when HunyuanDIT is detected"
+OUTPUT_5 = "Active when Stable Diffusion 3 is detected"
+OUTPUT_6 = "Active when Stable Cascade C is detected"
+OUTPUT_6 = "Active when Stable Cascade B is detected"
 
 
 class selectah:
@@ -64,6 +78,7 @@ class selectah:
         ("2:1___XL 1408x704", 1408, 704),
         ("23:11_XL 1472x704", 1472, 704),
         ("21:9__XL 1536x640", 1536, 640),
+        ("2:1)__XL 1536x768", 1536, 768),
         ("5:2___XL 1600x640", 1600, 640),
         ("26:9__XL 1664x576", 1664, 576),
         ("3:1___XL 1728x576", 1728, 576),
@@ -241,7 +256,7 @@ anyting = ne_ting("*")
 
 
 # ltdrdata 🤍
-class re_korz:
+class recourse:
     def __init__(self):
         pass
 
@@ -280,7 +295,7 @@ class re_korz:
             )
 
 
-class re_korz_ckpt:
+class recourse_checkpoint:
     def __init__(self):
         pass
 
@@ -321,10 +336,8 @@ class re_korz_ckpt:
         vae_out = next((vae for vae in [vae_opta, vae_optb] if vae), None)
 
         model_id = type(model_out.model).__name__
-        print(f"{model_id} dddd")
-        print(type(model_out.model).__name__)
         model_type = MODEL_TO_TYPE.get(model_id)
-        print(model_type)
+        print(f"Configuration : {model_id}, Aligning Outputs to: {model_type}")
         return (
             model_out,
             clip_out,
@@ -333,7 +346,7 @@ class re_korz_ckpt:
         )
 
 
-class re_korz_polarity:
+class recourse_polarity:
     def __init__(self):
         pass
 
@@ -365,9 +378,9 @@ class re_korz_polarity:
     DESCRIPTION = RECOURSE_DESC
     FUNCTION = "checkcond"
 
-    def checkcond(self, pos_opta=0, pos_optb=0, pos_optc=0, pos_optd=0, neg_opta=0, neg_optb=0, neg_optc=0, neg_optd=0):
-        pos_out = next((pos for pos in [pos_opta, pos_optb, pos_optc, pos_optd] if pos), None)
-        neg_out = next((neg for neg in [neg_opta, neg_optb, neg_optc, neg_optd] if neg), None)
+    def checkcond(self, **kwargs):
+        pos_out = next((pos for pos in kwargs if pos), None)
+        neg_out = next((neg for neg in kwargs if neg), None)
 
         return (
             pos_out,
@@ -375,7 +388,7 @@ class re_korz_polarity:
         )
 
 
-class re_korz_image:
+class recourse_image:
     def __init__(self):
         pass
 
@@ -403,7 +416,7 @@ class re_korz_image:
 
 
 # ltdrdata 🤍
-class fork:
+class fork_model:
     @classmethod
     def INPUT_TYPES(s):
         return {
@@ -442,12 +455,12 @@ class fork:
         "OUT_G",
         "OUT_H",
     )
-    FUNCTION = "forkd"
+    FUNCTION = "select_model"
 
     CATEGORY = SELECTOR_CATEGORY
     DESCRIPTION = SELECTOR_DESC
 
-    def forkd(self, model_type, model):
+    def select_model(self, model_type, model):
         result = [None] * MAX_RECOURSE_INPUTS
         if 1 <= model_type <= MAX_RECOURSE_INPUTS:
             result[model_type - 1] = model
@@ -509,15 +522,19 @@ class fork_clip:
         )
 
 
-class unite:
+class unite_model:
     @classmethod
     def INPUT_TYPES(s):
         return {
             "optional": {
-                "latent1": ("LATENT",),
-                "latent2": ("LATENT",),
-                "latent3": ("LATENT",),
-                "latent4": ("LATENT",),
+                "latent1": ("LATENT", {"lazy": True}),
+                "latent2": ("LATENT", {"lazy": True}),
+                "latent3": ("LATENT", {"lazy": True}),
+                "latent4": ("LATENT", {"lazy": True}),
+                "latent5": ("LATENT", {"lazy": True}),
+                "latent6": ("LATENT", {"lazy": True}),
+                "latent7": ("LATENT", {"lazy": True}),
+                "latent8": ("LATENT", {"lazy": True}),
             },
             "required": {
                 "model_type": (
@@ -531,36 +548,25 @@ class unite:
             },
         }
 
+    def check_lazy_status(self, **kwargs):
+        live_output = f"latent{int(kwargs['model_type'])}"
+        if live_output in kwargs:
+            return [live_output]
+        else:
+            return []
+
     RETURN_TYPES = ("LATENT",)
     RETURN_NAMES = ("LATENT",)
-    FUNCTION = "unity"
+    FUNCTION = "select_model"
 
     CATEGORY = SELECTOR_CATEGORY
     DESCRIPTION = SELECTOR_DESC
 
-    def unity(
-        self,
-        model_type,
-        latent1=None,
-        latent2=None,
-        latent3=None,
-        latent4=None,
-    ):
-        latent_list = [
-            latent1,
-            latent2,
-            latent2,
-            latent2,
-            latent2,
-            latent3,
-            latent4,
-            latent4,
-        ]
-        latent_type = model_type - 1
-        print(latent_type)
-        latent_input = latent_list[latent_type]
-
-        return (latent_input,)
+    def select_model(self, **kwargs):
+        live_output = f"latent{int(kwargs['model_type'])}"
+        if live_output in kwargs:
+            return (kwargs[live_output],)
+        return (None,)
 
 
 class unite_model:
@@ -568,14 +574,14 @@ class unite_model:
     def INPUT_TYPES(s):
         return {
             "optional": {
-                "model1": ("MODEL",),
-                "model2": ("MODEL",),
-                "model3": ("MODEL",),
-                "model4": ("MODEL",),
-                "model5": ("MODEL",),
-                "model6": ("MODEL",),
-                "model7": ("MODEL",),
-                "model8": ("MODEL",),
+                "model1": ("MODEL", {"lazy": True}),
+                "model2": ("MODEL", {"lazy": True}),
+                "model3": ("MODEL", {"lazy": True}),
+                "model4": ("MODEL", {"lazy": True}),
+                "model5": ("MODEL", {"lazy": True}),
+                "model6": ("MODEL", {"lazy": True}),
+                "model7": ("MODEL", {"lazy": True}),
+                "model8": ("MODEL", {"lazy": True}),
             },
             "required": {
                 "model_type": (
@@ -588,6 +594,13 @@ class unite_model:
                 ),
             },
         }
+
+    def check_lazy_status(self, **kwargs):
+        live_output = f"model{int(kwargs['model_type'])}"
+        if live_output in kwargs:
+            return [live_output]
+        else:
+            return []
 
     RETURN_TYPES = ("MODEL",)
     RETURN_NAMES = ("MODEL",)
@@ -596,9 +609,12 @@ class unite_model:
     CATEGORY = SELECTOR_CATEGORY
     DESCRIPTION = SELECTOR_DESC
 
-    def select_model(self, **kwargs):
-        model_out = f"model{int(kwargs['model_type'])}"
-        return (kwargs[model_out],) if model_out in kwargs else (None,)
+    @staticmethod
+    def select_model(**kwargs):
+        live_output = f"model{int(kwargs['model_type'])}"
+        if live_output in kwargs:
+            return (kwargs[live_output],)
+        return (None,)
 
 
 class unite_clip:
@@ -606,14 +622,14 @@ class unite_clip:
     def INPUT_TYPES(s):
         return {
             "optional": {
-                "clip1": ("CLIP",),
-                "clip2": ("CLIP",),
-                "clip3": ("CLIP",),
-                "clip4": ("CLIP",),
-                "clip5": ("CLIP",),
-                "clip6": ("CLIP",),
-                "clip7": ("CLIP",),
-                "clip8": ("CLIP",),
+                "clip1": ("CLIP", {"lazy": True}),
+                "clip2": ("CLIP", {"lazy": True}),
+                "clip3": ("CLIP", {"lazy": True}),
+                "clip4": ("CLIP", {"lazy": True}),
+                "clip5": ("CLIP", {"lazy": True}),
+                "clip6": ("CLIP", {"lazy": True}),
+                "clip7": ("CLIP", {"lazy": True}),
+                "clip8": ("CLIP", {"lazy": True}),
             },
             "required": {
                 "model_type": (
@@ -627,17 +643,26 @@ class unite_clip:
             },
         }
 
+    def check_lazy_status(self, **kwargs):
+        live_output = f"clip{int(kwargs['model_type'])}"
+        if live_output in kwargs:
+            return [live_output]
+        else:
+            return []
+
     RETURN_TYPES = ("CLIP",)
     RETURN_NAMES = ("CLIP",)
-    FUNCTION = "unity_clip"
+    FUNCTION = "select_model"
 
     CATEGORY = SELECTOR_CATEGORY
     DESCRIPTION = SELECTOR_DESC
 
-    def unity_clip(self, **kwargs):
-        print(kwargs["model_type"])
-        clip_out = f"clip{int(kwargs['model_type'])}"
-        return (kwargs[clip_out],) if clip_out in kwargs else (None,)
+    @staticmethod
+    def select_model(**kwargs):
+        live_output = f"clip{int(kwargs['model_type'])}"
+        if live_output in kwargs:
+            return (kwargs[live_output],)
+        return (None,)
 
 
 class unite_conditioning:
@@ -645,14 +670,14 @@ class unite_conditioning:
     def INPUT_TYPES(s):
         return {
             "optional": {
-                "conditioning1": ("CONDITIONING",),
-                "conditioning2": ("CONDITIONING",),
-                "conditioning3": ("CONDITIONING",),
-                "conditioning4": ("CONDITIONING",),
-                "conditioning5": ("CONDITIONING",),
-                "conditioning6": ("CONDITIONING",),
-                "conditioning7": ("CONDITIONING",),
-                "conditioning8": ("CONDITIONING",),
+                "conditioning1": ("CONDITIONING", {"lazy": True}),
+                "conditioning2": ("CONDITIONING", {"lazy": True}),
+                "conditioning3": ("CONDITIONING", {"lazy": True}),
+                "conditioning4": ("CONDITIONING", {"lazy": True}),
+                "conditioning5": ("CONDITIONING", {"lazy": True}),
+                "conditioning6": ("CONDITIONING", {"lazy": True}),
+                "conditioning7": ("CONDITIONING", {"lazy": True}),
+                "conditioning8": ("CONDITIONING", {"lazy": True}),
             },
             "required": {
                 "model_type": (
@@ -666,16 +691,122 @@ class unite_conditioning:
             },
         }
 
+    def check_lazy_status(self, **kwargs):
+        live_output = f"conditioning{int(kwargs['model_type'])}"
+        if live_output in kwargs:
+            return [live_output]
+        else:
+            return []
+
     RETURN_TYPES = ("CONDITIONING",)
     RETURN_NAMES = ("CONDITIONING",)
-    FUNCTION = "select_conditioning"
+    FUNCTION = "select_model"
 
     CATEGORY = SELECTOR_CATEGORY
     DESCRIPTION = SELECTOR_DESC
 
-    def select_conditioning(self, **kwargs):
-        conditioning_out = f"conditioning{int(kwargs['model_type'])}"
-        return (kwargs[conditioning_out],) if conditioning_out in kwargs else (None,)
+    @staticmethod
+    def select_model(**kwargs):
+        live_output = f"conditioning{int(kwargs['model_type'])}"
+        if live_output in kwargs:
+            return (kwargs[live_output],)
+        return (None,)
+
+
+class unite_guider:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "optional": {
+                "guider1": ("GUIDER", {"lazy": True}),
+                "guider2": ("GUIDER", {"lazy": True}),
+                "guider3": ("GUIDER", {"lazy": True}),
+                "guider4": ("GUIDER", {"lazy": True}),
+                "guider5": ("GUIDER", {"lazy": True}),
+                "guider6": ("GUIDER", {"lazy": True}),
+                "guider7": ("GUIDER", {"lazy": True}),
+                "guider8": ("GUIDER", {"lazy": True}),
+            },
+            "required": {
+                "model_type": (
+                    "INT",
+                    {
+                        "default": 1,
+                        "min": 1,
+                        "max": MAX_RECOURSE_INPUTS,
+                    },
+                ),
+            },
+        }
+
+    def check_lazy_status(self, **kwargs):
+        live_output = f"guider{int(kwargs['model_type'])}"
+        if live_output in kwargs:
+            return [live_output]
+        else:
+            return []
+
+    RETURN_TYPES = ("GUIDER",)
+    RETURN_NAMES = ("GUIDER",)
+    FUNCTION = "select_model"
+
+    CATEGORY = SELECTOR_CATEGORY
+    DESCRIPTION = SELECTOR_DESC
+
+    @staticmethod
+    def select_model(**kwargs):
+        live_output = f"guider{int(kwargs['model_type'])}"
+        if live_output in kwargs:
+            return (kwargs[live_output],)
+        return (None,)
+
+
+class unite_vae:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "optional": {
+                "vae1": ("VAE", {"lazy": True}),
+                "vae2": ("VAE", {"lazy": True}),
+                "vae3": ("VAE", {"lazy": True}),
+                "vae4": ("VAE", {"lazy": True}),
+                "vae5": ("VAE", {"lazy": True}),
+                "vae6": ("VAE", {"lazy": True}),
+                "vae7": ("VAE", {"lazy": True}),
+                "vae8": ("VAE", {"lazy": True}),
+            },
+            "required": {
+                "model_type": (
+                    "INT",
+                    {
+                        "default": 1,
+                        "min": 1,
+                        "max": MAX_RECOURSE_INPUTS,
+                    },
+                ),
+            },
+        }
+
+    def check_lazy_status(self, **kwargs):
+        live_output = f"vae{int(kwargs['model_type'])}"
+        if live_output in kwargs:
+            return [live_output]
+        else:
+            return []
+
+    RETURN_TYPES = ("VAE",)
+    RETURN_NAMES = ("VAE",)
+    FUNCTION = "select_model"
+
+    CATEGORY = SELECTOR_CATEGORY
+    DESCRIPTION = SELECTOR_DESC
+
+    @staticmethod
+    def select_model(**kwargs):
+        live_output = f"vae{int(kwargs['model_type'])}"
+        if live_output in kwargs:
+            return (kwargs[live_output],)
+        return (None,)
 
 
 class fork_conditioning:
@@ -722,7 +853,7 @@ class fork_conditioning:
     CATEGORY = SELECTOR_CATEGORY
     DESCRIPTION = SELECTOR_DESC
 
-    def select_condition(self, model_type, conditioning):
+    def select_condition(self, model_type, conditioning=None):
         result = [None] * MAX_RECOURSE_INPUTS
         if 1 <= model_type <= MAX_RECOURSE_INPUTS:
             result[model_type - 1] = conditioning
@@ -733,16 +864,18 @@ class fork_conditioning:
 
 NODE_CLASS_MAPPINGS = {
     "Selector": selectah,
-    "Recourse": re_korz,
-    "RecourseCkpt": re_korz_ckpt,
-    "Recourse+-": re_korz_polarity,
-    "RecourseImage": re_korz_image,
-    "Fork": fork,
+    "Recourse": recourse,
+    "RecourseCkpt": recourse_checkpoint,
+    "Recourse+-": recourse_polarity,
+    "RecourseImage": recourse_image,
+    "Fork": fork_model,
     "ForkClip": fork_clip,
-    "Unite": unite,
+    "Unite": unite_model,
     "UniteModel": unite_model,
     "UniteClip": unite_clip,
     "Unite+-": unite_conditioning,
+    "UniteGuider": unite_guider,
+    "UniteVAE": unite_vae,
     "Fork+-": fork_conditioning,
 }
 
@@ -758,5 +891,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "UniteModel": "Unite (Model)...",
     "UniteClip": "Unite (Clip)...",
     "Unite+-": "Unite (Polarity)...",
+    "UniteGuider": "Unite (Guider)...",
+    "UniteVAE": "Unite (VAE)...",
     "Fork+-": "Fork (Polarity)...",
 }
