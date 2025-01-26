@@ -4,7 +4,7 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "3.1.0"
+@version: "3.2.1"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
@@ -34,6 +34,10 @@ SELECTOR_CATEGORY_PATH = "Selector_Recourse"
 
 MODEL_1 = "This port requires MODEL to send the MODEL_TYPE to other nodes."
 MODEL_2 = "This port is activated in case MODEL_1 has no signal."
+RECOURSE_PORT = "The lowest number port with an active signal is used."
+STRING_PORT = "A single string to send"
+LINK_PORT = "All strings are joined together and sent as one"
+
 
 SD_RES = 8
 XL_RES = 9
@@ -263,13 +267,34 @@ class RecourseCheckpoint:
     def INPUT_TYPES(cls):
         return {
             "optional": {
-                "model_opta": ("MODEL",),
-                "model_optb": ("MODEL",),
-                "clip_opta": ("CLIP",),
-                "clip_optb": ("CLIP",),
-                "clip_optc": ("CLIP",),
-                "vae_opta": ("VAE",),
-                "vae_optb": ("VAE",),
+                "model_opta": (
+                    "MODEL",
+                    {"tooltip": MODEL_1},
+                ),
+                "model_optb": (
+                    "MODEL",
+                    {"tooltip": MODEL_2},
+                ),
+                "clip_opta": (
+                    "CLIP",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "clip_optb": (
+                    "CLIP",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "clip_optc": (
+                    "CLIP",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "vae_opta": (
+                    "VAE",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "vae_optb": (
+                    "VAE",
+                    {"tooltip": RECOURSE_PORT},
+                ),
             },
             "required": {},
         }
@@ -289,6 +314,7 @@ class RecourseCheckpoint:
     FUNCTION = "checkckpt"
     CATEGORY = SELECTOR_CATEGORY_PATH
     DESCRIPTION = RECOURSE_CHECK_DESC
+    OUTPUT_TOOLTIPS = (RECOURSE_PORT, RECOURSE_PORT, RECOURSE_PORT)
 
     def checkckpt(self, model_opta=None, model_optb=None, clip_opta=None, clip_optb=None, clip_optc=None, vae_opta=None, vae_optb=None, model_type=1):
         model_out = next((model for model in [model_opta, model_optb] if model), None)
@@ -314,7 +340,7 @@ class RecourseStrings:
     def INPUT_TYPES(s):
         return {
             "required": {
-                "model_1": (
+                "string_1": (
                     "STRING",
                     {
                         "multiline": True,
@@ -324,7 +350,7 @@ class RecourseStrings:
                 ),
             },
             "optional": {
-                "model_2": (
+                "string_2": (
                     "STRING",
                     {
                         "multiline": True,
@@ -332,7 +358,7 @@ class RecourseStrings:
                         "dynamicPrompts": True,
                     },
                 ),
-                "model_3": (
+                "string_3": (
                     "STRING",
                     {
                         "multiline": True,
@@ -355,12 +381,13 @@ class RecourseStrings:
     )
     RETURN_NAMES = (
         "LINKED_STRINGS",
-        "MODEL_1",
-        "MODEL_2",
-        "MODEL_3",
+        "STRING_1",
+        "STRING_2",
+        "STRING_3",
         "SEED",
         "NOISE_SEED",
     )
+    OUTPUT_TOOLTIPS = (LINK_PORT, STRING_PORT, STRING_PORT, STRING_PORT, None, None)
     FUNCTION = "recourse_string"
 
     CATEGORY = SELECTOR_CATEGORY_PATH
@@ -369,18 +396,18 @@ class RecourseStrings:
         self,
         seed,
         noise_seed,
-        model_1,
-        model_2="",
-        model_3="",
+        string_1,
+        string_2="",
+        string_3="",
     ):
-        data = [model_1, model_2, model_3]
+        data = [string_1, string_2, string_3]
         full_out = "".join(data)
 
         return (
             full_out,
-            model_1,
-            model_2,
-            model_3,
+            string_1,
+            string_2,
+            string_3,
             seed,
             noise_seed,
         )

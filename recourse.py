@@ -2,7 +2,7 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "3.2.0"
+@version: "3.2.1"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
@@ -75,14 +75,38 @@ class RecoursePolar:
     def INPUT_TYPES(cls):
         return {
             "optional": {
-                "pos_opta": ("CONDITIONING",),
-                "pos_optb": ("CONDITIONING",),
-                "pos_optc": ("CONDITIONING",),
-                "pos_optd": ("CONDITIONING",),
-                "neg_opta": ("CONDITIONING",),
-                "neg_optb": ("CONDITIONING",),
-                "neg_optc": ("CONDITIONING",),
-                "neg_optd": ("CONDITIONING",),
+                "pos_opta": (
+                    "CONDITIONING",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "pos_optb": (
+                    "CONDITIONING",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "pos_optc": (
+                    "CONDITIONING",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "pos_optd": (
+                    "CONDITIONING",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "neg_opta": (
+                    "CONDITIONING",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "neg_optb": (
+                    "CONDITIONING",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "neg_optc": (
+                    "CONDITIONING",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "neg_optd": (
+                    "CONDITIONING",
+                    {"tooltip": RECOURSE_PORT},
+                ),
             },
             "required": {},
         }
@@ -117,10 +141,22 @@ class RecourseImage:
     def INPUT_TYPES(cls):
         return {
             "optional": {
-                "img_opta": ("IMAGE",),
-                "img_optb": ("IMAGE",),
-                "img_optc": ("IMAGE",),
-                "img_optd": ("IMAGE",),
+                "img_opta": (
+                    "IMAGE",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "img_optb": (
+                    "IMAGE",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "img_optc": (
+                    "IMAGE",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "img_optd": (
+                    "IMAGE",
+                    {"tooltip": RECOURSE_PORT},
+                ),
             },
             "required": {},
         }

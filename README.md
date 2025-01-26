@@ -1,46 +1,75 @@
 # comfyui-selector
- 
-> 簡單的離線節點，用於ComfyUI。[選擇器]預設值[資源]開關
-> Quick and dirty nodes for [ComfyUI](https://github.com/comfyanonymous/comfyui)
-> 這些節點將會在images/utilities下列出，或者你可以輸入“.”來在搜索/雙擊菜單中的網格上找到它。
-> The nodes will be listed under images/utils, or you can type ```.``` to find it in search/double-click menu on the grid. 
- 
-> [!Note]
-> 注釋
->  ```git clone https://github.com/exdysa/comfyui-selector/```
-> 或將.py檔案放在...內 or place [the .py file](https://raw.githubusercontent.com/exdysa/comfyui-selector/main/selector.py) inside `custom_nodes`.
 
-> "資源"節點 - 從python-goss/ltdrdata建立。如果輸入被静音/跳過/刪除，它使用'fallback'中的替代輸入。這裡還有一個額外的布林出口，你可以在邏輯混亂中使用它。請確保輸入、失敗和輸出類型相符...
-> "Recourse" node - building from pythongoss/ltdrdata. If the input has been muted/bypassed/deleted, it uses the alternative input in 'fallback'. There is an additional boolean out that you can use for logic mayhem as well. You _probably_ want to make sure input, fallback and output types match...
 >
-> ![Screenshot 2024-06-04 020106](https://github.com/exdysa/comfyui-selector/assets/91800957/172c57c4-48a6-41b2-aad7-c7ce1240a2f7)
+ComfyUI-Selector擴充套件節點透過識別模型和向其他節點廣播設定來增強ComfyUI。 這些訊號在節點圖中同時更改了許多節點的設定，使使用者從技術工作中解放出來，這樣他們就可以專注於ComfyUI中的藝術體驗。
 
-> "資源"現在有6個fallback朋友，大部分都由一個模式識別節點稱為Check控制，並根據檢查點類型重新導向輸出。輸入1是sd，2是xl，3是sd3，而輸入4是refiner。這大大簡化了自動化任務。
-> "Recourse" now has 6 fallback friends, most of which are controlled by a model-identifying node called Check that redirects output based on checkpoint type. input 1 is sd, 2 is xl, 3 is sd3 and input 4 is refiner. This greatly simplifies automation tasks.
-> ![recoursecheck](https://github.com/exdysa/comfyui-selector/assets/91800957/be002cf1-b597-4b1d-8d3e-cc30d666087f)
-> ![forkmodel](https://github.com/exdysa/comfyui-selector/assets/91800957/fabb71ef-7092-4b43-b2a8-e64555cf7381)
-> ![forkclip](https://github.com/exdysa/comfyui-selector/assets/91800957/f6e24932-6e69-4853-9dcf-1c01383764ae)
-> ![unite](https://github.com/exdysa/comfyui-selector/assets/91800957/eeb58b34-e99d-409c-b862-1f5f7dfd21e1)
-> ![recoursepolar](https://github.com/exdysa/comfyui-selector/assets/91800957/ab2fe0a9-cd5f-48dd-8c38-8f281f62ce15)
-> ![recourseimg](https://github.com/exdysa/comfyui-selector/assets/91800957/1c8dc87f-dcac-41ba-b625-7386fb9f7a9d)
+在您的指揮下，有十五個功能強大且易於理解的節點。 “Recourse”節點透過提供輔助訊號來防止連線中斷。 現在，您可以減少因錯誤而中斷工作的頻率。“Selector”根據模型指導節點的訊號流。 建立精確而靈活的工作流程，這些工作流程可以像您的靈感一樣快速發展。
 
-> "選擇器"節點 - 生成用於其他節點的簡單參數  "Selector" node - Generates simple parameters to use in other nodes
-> ![Screenshot_2024-05-26_16-12-36](https://github.com/exdysa/comfyui-selector/assets/91800957/fbba564f-b4df-48fc-8489-f01dc60bc8ba)
-> ![Screenshot_2024-05-26_17-44-08](https://github.com/exdysa/comfyui-selector/assets/91800957/30ed648b-802b-474c-a48c-371813d6d102)
-> ![Screenshot_2024-05-26_16-13-26](https://github.com/exdysa/comfyui-selector/assets/91800957/2dd842b5-f84b-423d-b430-bd85e19e9e33)
-> 
-> Data output todo :
-> - ~SD 3.0 resolutions~
-> - ~sampler options~
-> - ~support for Pixart alpha/sigma, playground, kandinsky, etc...~
-> - ~upscale dimensions and factors~
-> - ~multiple steps~
-> - ~multiple cfgs~
-> - ~refiner steps~
-> - ~multiple denoises~
-> - ~...toast??~
+感謝您的下載。 請期待它。
 
-> Initial plans I will likely not attempt :
-> - custom values
-> - multiple seeds
-> - nested menus for model types
+## Installation:
+> 自動安裝從[ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager)
+>
+> or
+>
+>  ```git clone https://github.com/exdysa/comfyui-selector/```
+>
+> or
+>
+> 或將.py檔案放在...內 `custom_nodes`.
+
+## Usage:
+
+> “Selector” : 在這裡為許多節點選擇選項
+> - 水平維度,  垂直維度.一次要製作的影象數量,迭代,詳細步驟,CFG, Detailer CFG, denoise...
+
+> “Recourse” :在發生事故時新增二級模型
+> - 活動自動用於每個輸入。 連線許多相同型別的。 安全第一！
+
+> “Selector In/Out”: 添加 “model_type”. 輸出是模型的編號如下：
+> - 1 STABLE DIFFUSION 1
+> - 2 STABLE DIFFUSION XL
+> - 3 FLUX
+> - 4 AURAFLOW
+> - 5 HUNYUANDIT
+> - 6 STABLE DIFFUSION 3
+> - 7 STABLE CASCADE-C
+> - 8 STABLE CASCADE-B
+
+<hr>
+ComfyUI-Selector extension node enhances ComfyUI by identifying models and broadcasting to other nodes. These signals change the settings of many nodes in the node diagram at the same time, freeing users from technical work, so that they can focus on the artistic experience in ComfyUI.
+
+Under your command are fifteen powerful and easy-to-understand nodes:
+
+- The "Recourse" node prevents connection interruption by providing auxiliary signals. Now, you can reduce the frequency of interruptions due to errors.
+
+- Selector" guides the signal flow of the node according to the model. Create accurate and flexible workflows, which can develop as quickly as your inspiration.
+
+ ## Installation:
+ > Automatic installation from [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager)
+ >
+ > or
+ >
+ > ```git clone https://github.com/exdysa/comfyui-selector/```
+ >
+ > or
+ > put the .py file in... Inside `custom_nodes`.
+
+ ## Usage:
+
+ > - "Selector": Select options for many nodes here
+ > - horizontal dimension, vertical dimension. The number of images to be produced at a time, iteration, detailed steps, CFG, Detailer CFG, denoise, etc
+
+ > -"Recourse": Add a secondary model.
+ > In the event of an accident, automatically uses an active input. Connect many of the same type. Safety first!
+
+> "Selector In/Out": Add "model_type". The output is the number of the model as follows:
+> - 1 STABLE DIFFUSION 1
+> - 2 STABLE DIFFUSION XL
+> - 3 FLUX
+> - 4 AURAFLOW
+> - 5 HUNYUANDIT
+> - 6 STABLE DIFFUSION 3
+> - 7 STABLE CASCADE-C
+> - 8 STABLE CASCADE-B
+
