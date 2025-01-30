@@ -2,7 +2,7 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "3.2.3"
+@version: "4.0.0"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
@@ -75,35 +75,35 @@ class RecoursePolar:
     def INPUT_TYPES(cls):
         return {
             "optional": {
-                "pos_opta": (
+                "pos_a": (
                     "CONDITIONING",
                     {"tooltip": RECOURSE_PORT},
                 ),
-                "pos_optb": (
+                "pos_b": (
                     "CONDITIONING",
                     {"tooltip": RECOURSE_PORT},
                 ),
-                "pos_optc": (
+                "pos_c": (
                     "CONDITIONING",
                     {"tooltip": RECOURSE_PORT},
                 ),
-                "pos_optd": (
+                "pos_d": (
                     "CONDITIONING",
                     {"tooltip": RECOURSE_PORT},
                 ),
-                "neg_opta": (
+                "neg_a": (
                     "CONDITIONING",
                     {"tooltip": RECOURSE_PORT},
                 ),
-                "neg_optb": (
+                "neg_b": (
                     "CONDITIONING",
                     {"tooltip": RECOURSE_PORT},
                 ),
-                "neg_optc": (
+                "neg_c": (
                     "CONDITIONING",
                     {"tooltip": RECOURSE_PORT},
                 ),
-                "neg_optd": (
+                "neg_d": (
                     "CONDITIONING",
                     {"tooltip": RECOURSE_PORT},
                 ),
@@ -123,9 +123,11 @@ class RecoursePolar:
     DESCRIPTION = RECOURSE_DESC
     FUNCTION = "checkcond"
 
-    def checkcond(self, **kwargs):
-        pos_out = next((pos for pos in kwargs if pos), None)
-        neg_out = next((neg for neg in kwargs if neg), None)
+    def checkcond(self, pos_a, pos_b, pos_c, pos_d, neg_a, neg_b, neg_c, neg_d):
+        pos_kwargs = [pos_a, pos_b, pos_c, pos_d]
+        neg_kwargs = [neg_a, neg_b, neg_c, neg_d]
+        pos_out = next((pos for pos in pos_kwargs if pos), None)
+        neg_out = next((neg for neg in neg_kwargs if neg), None)
 
         return (
             pos_out,
@@ -141,19 +143,35 @@ class RecourseImage:
     def INPUT_TYPES(cls):
         return {
             "optional": {
-                "img_opta": (
+                "img_opt_a": (
                     "IMAGE",
                     {"tooltip": RECOURSE_PORT},
                 ),
-                "img_optb": (
+                "img_opt_b": (
                     "IMAGE",
                     {"tooltip": RECOURSE_PORT},
                 ),
-                "img_optc": (
+                "img_opt_c": (
                     "IMAGE",
                     {"tooltip": RECOURSE_PORT},
                 ),
-                "img_optd": (
+                "img_opt_d": (
+                    "IMAGE",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "img_opt_e": (
+                    "IMAGE",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "img_opt_f": (
+                    "IMAGE",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "img_opt_g": (
+                    "IMAGE",
+                    {"tooltip": RECOURSE_PORT},
+                ),
+                "img_opt_h": (
                     "IMAGE",
                     {"tooltip": RECOURSE_PORT},
                 ),

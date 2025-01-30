@@ -4,7 +4,7 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "3.2.3"
+@version: "4.0.0"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
@@ -17,8 +17,6 @@ import comfy.model_management
 import comfy.model_sampling
 
 MODEL_TO_TYPE = {
-    "StableCascade_B": 8,
-    "StableCascade_C": 7,
     "SD3": 6,
     "HunyuanDiT": 5,
     "AuraFlow": 4,
@@ -200,7 +198,7 @@ class Selectah:
                         "round": 0.001,
                     },
                 ),
-                "sampler": (comfy.samplers.KSampler.SAMPLERS,),
+                "sampler_name": (comfy.samplers.KSampler.SAMPLERS,),
                 "scheduler": (comfy.samplers.KSampler.SCHEDULERS,),
             },
         }
@@ -231,13 +229,27 @@ class Selectah:
         "DENOISE",
         "VARIATION_STR",
         "SCALE",
-        "SAMPLER",
+        "SAMPLER_NAME",
         "SCHEDULER",
     )
     FUNCTION = "selectah"
     CATEGORY = SELECTOR_CATEGORY_PATH
 
-    def selectah(self, aspect_ratio, rotation, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale, variation_str, sampler, scheduler):
+    def selectah(
+        self,
+        aspect_ratio,
+        rotation,
+        batch=None,
+        steps=None,
+        refiner_steps=None,
+        cfg=None,
+        refiner_cfg=None,
+        str_denoise=None,
+        scale=None,
+        variation_str=None,
+        sampler_name=None,
+        scheduler=None,
+    ):
         """
         Choose universal settings for multiple repeat settings workflows\n
         :param aR: Desired aspect ratio of image
@@ -252,10 +264,10 @@ class Selectah:
             if title == aspect_ratio:
                 if rotation == "portrait":
                     width, height = height, width  # Swap for portrait orientation
-                return (width, height, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale, variation_str, sampler, scheduler)
+                return (width, height, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale, variation_str, sampler_name, scheduler)
 
         # If aspect ratio is not found, return None for width and height
-        return (None, None, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale, variation_str, sampler, scheduler)
+        return (None, None, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale, variation_str, sampler_name, scheduler)
 
 
 class SelectahAdv:
@@ -494,7 +506,7 @@ class RecourseCheckpoint:
         vae_out = next((vae for vae in [vae_opta, vae_optb] if vae), None)
 
         model_id = type(model_out.model).__name__
-        model_type = MODEL_TO_TYPE.get(model_id)
+        model_type = MODEL_TO_TYPE.get(model_id, 7)
         print(f"Model configuration {model_id}, Selected output {model_type}")
         return (
             model_out,
