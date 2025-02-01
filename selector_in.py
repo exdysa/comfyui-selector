@@ -2,14 +2,14 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "4.0.0"
+@version: "4.0.1"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
 
 MAX_RECOURSE_INPUTS = 8
 
-SELECTOR_IN_CATEGORY_PATH = "Selector_Recourse/Out"
+SELECTOR_IN_CATEGORY_PATH = "Selector_Recourse/In"
 SELECTOR_DESC = "Directs flow. Coordinated by model type output from RecourseCheckpoint."
 TYPE_DESC = "SD1, SDXL, FLUX, AURAFLOW, HUNYUANDIT, SD3, STABLE_CASCADE_C, STABLE_CASCADE_B"
 SELECTOR_PORT = "An input port is activated based on the model_type number."
@@ -393,49 +393,49 @@ class SelInFloat:
         node_type = "FLOAT"
         return {
             "optional": {
-                "cfg1": (
+                "float1": (
                     node_type,
                     {
                         "lazy": True,
                     },
                 ),
-                "cfg2": (
+                "float2": (
                     node_type,
                     {
                         "lazy": True,
                     },
                 ),
-                "cfg3": (
+                "float3": (
                     node_type,
                     {
                         "lazy": True,
                     },
                 ),
-                "cfg4": (
+                "float4": (
                     node_type,
                     {
                         "lazy": True,
                     },
                 ),
-                "cfg5": (
+                "float5": (
                     node_type,
                     {
                         "lazy": True,
                     },
                 ),
-                "cfg6": (
+                "float6": (
                     node_type,
                     {
                         "lazy": True,
                     },
                 ),
-                "cfg7": (
+                "float7": (
                     node_type,
                     {
                         "lazy": True,
                     },
                 ),
-                "cfg8": (
+                "float8": (
                     node_type,
                     {
                         "lazy": True,
@@ -470,7 +470,7 @@ class SelInFloat:
 
     @staticmethod
     def select_model(**kwargs):
-        live_output = f"cfg{int(kwargs['model_type'])}"
+        live_output = f"float{int(kwargs['model_type'])}"
         if live_output in kwargs:
             return (kwargs[live_output],)
         return (None,)
@@ -645,5 +645,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "SelInSigmas": "Selector In (SIGMAS)",
     "SelInSampler": "Selector In (SAMPLER)",
     "SelInFloat": "Selector In (FLOAT)",
-    "SelInInt": "Selector In (Int)",
+    "SelInInt": "Selector In (INT)",
 }

@@ -4,7 +4,7 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "4.0.0"
+@version: "4.0.1"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
@@ -380,6 +380,14 @@ class SelectahAdv:
                         "round": 0.001,
                     },
                 ),
+                "override": (
+                    "INT",
+                    {
+                        "default": 0,
+                        "min": -0xFFFFFFFE,
+                        "max": 0xFFFFFFFE,
+                    },
+                ),
             },
         }
 
@@ -394,6 +402,7 @@ class SelectahAdv:
         "FLOAT",
         "FLOAT",
         "FLOAT",
+        "INT",
     )
 
     RETURN_NAMES = (
@@ -407,6 +416,7 @@ class SelectahAdv:
         "SHIFT_3",
         "SHIFT_4",
         "ALT_SCALE",
+        "OVERRIDE",
     )
     FUNCTION = "selectah_adv"
     CATEGORY = SELECTOR_CATEGORY_PATH
@@ -423,6 +433,7 @@ class SelectahAdv:
         shift_3=None,
         shift_4=None,
         alt_scale=None,
+        override=0,
     ):
         """
         Choose advanced workflow settings from a central place\n
@@ -438,7 +449,169 @@ class SelectahAdv:
             shift_3,
             shift_4,
             alt_scale,
+            override,
         )
+
+
+class SelectahHub:
+    """Pass settings across graph easier"""
+
+    def __init__(self):
+        pass
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        """User inputs"""
+
+        return {
+            "optional": {
+                "width": (
+                    "INT",
+                    {
+                        "default": 1,
+                        "min": -10000,
+                        "max": 10000,
+                    },
+                ),
+                "height": (
+                    "INT",
+                    {
+                        "default": 1,
+                        "min": -10000,
+                        "max": 10000,
+                    },
+                ),
+                "batch": (
+                    "INT",
+                    {
+                        "default": 1,
+                        "min": -10000,
+                        "max": 10000,
+                    },
+                ),
+                "steps": (
+                    "INT",
+                    {
+                        "default": 20,
+                        "min": -10000,
+                        "max": 10000,
+                    },
+                ),
+                "refiner_steps": (
+                    "INT",
+                    {
+                        "default": 0,
+                        "min": -10000,
+                        "max": 10000,
+                    },
+                ),
+                "cfg": (
+                    "FLOAT",
+                    {
+                        "default": 1.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
+                ),
+                "refiner_cfg": (
+                    "FLOAT",
+                    {
+                        "default": 1.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
+                ),
+                "str_denoise": (
+                    "FLOAT",
+                    {
+                        "default": 1.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
+                ),
+                "scale": (
+                    "FLOAT",
+                    {
+                        "default": 2.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
+                ),
+                "variation_str": (
+                    "FLOAT",
+                    {
+                        "default": 0.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
+                ),
+                "sampler_name": (comfy.samplers.KSampler.SAMPLERS,),
+                "scheduler": (comfy.samplers.KSampler.SCHEDULERS,),
+            },
+            "required": {},
+        }
+
+    RETURN_TYPES = (
+        "INT",
+        "INT",
+        "INT",
+        "INT",
+        "INT",
+        "FLOAT",
+        "FLOAT",
+        "FLOAT",
+        "FLOAT",
+        "FLOAT",
+        comfy.samplers.KSampler.SAMPLERS,
+        comfy.samplers.KSampler.SCHEDULERS,
+    )
+
+    RETURN_NAMES = (
+        "WIDTH",
+        "HEIGHT",
+        "BATCH_SIZE",
+        "STEPS",
+        "REFINER_STEPS",
+        "CFG",
+        "REFINER_CFG",
+        "DENOISE",
+        "VARIATION_STR",
+        "SCALE",
+        "SAMPLER_NAME",
+        "SCHEDULER",
+    )
+    FUNCTION = "selectah"
+    CATEGORY = SELECTOR_CATEGORY_PATH
+
+    def selectah(
+        self,
+        width=None,
+        height=None,
+        batch=None,
+        steps=None,
+        refiner_steps=None,
+        cfg=None,
+        refiner_cfg=None,
+        str_denoise=None,
+        scale=None,
+        variation_str=None,
+        sampler_name=None,
+        scheduler=None,
+    ):
+        """
+        Pass settings from selectah through the graph
+        """
+        return (width, height, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale, variation_str, sampler_name, scheduler)
 
 
 class RecourseCheckpoint:
@@ -588,6 +761,7 @@ class RecourseStrings:
 NODE_CLASS_MAPPINGS = {
     "Selector": Selectah,
     "Selector Advanced": SelectahAdv,
+    "Selector Hub": SelectahHub,
     "RecourseCkpt": RecourseCheckpoint,
     "RecourseStrings": RecourseStrings,
 }
@@ -595,6 +769,7 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "Selector": "Selector...",
     "Selector Advanced": "Selector Advanced...",
+    "Selector Hub": "Selector Hub...",
     "RecourseCkpt": "RecourseCheck...",
     "RecourseStrings": "RecourseStrings...",
 }

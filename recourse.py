@@ -2,7 +2,7 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "4.0.0"
+@version: "4.0.1"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
@@ -119,7 +119,7 @@ class RecoursePolar:
         "CONDITION+",
         "CONDITION-",
     )
-    CATEGORY = f"{RECOURSE_CATEGORY_PATH}/Recourse"
+    CATEGORY = RECOURSE_CATEGORY_PATH
     DESCRIPTION = RECOURSE_DESC
     FUNCTION = "checkcond"
 

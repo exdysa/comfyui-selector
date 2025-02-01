@@ -2,14 +2,14 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "4.0.0"
+@version: "4.0.1"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
 
 MAX_RECOURSE_INPUTS = 8
 
-SELECTOR_OUT_CATEGORY_PATH = "Selector_Recourse/In"
+SELECTOR_OUT_CATEGORY_PATH = "Selector_Recourse/Out"
 SELECTOR_DESC = "Directs flow. Coordinated by model type output from RecourseCheckpoint."
 TYPE_DESC = "SD1, SDXL, FLUX, AURAFLOW, HUNYUANDIT, SD3, STABLE_CASCADE_C, STABLE_CASCADE_B"
 SELECTOR_PORT = "An output port is activated based on the model_type number."
