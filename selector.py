@@ -4,7 +4,7 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "4.0.1"
+@version: "4.0.4"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
@@ -16,6 +16,7 @@ import comfy.model_base
 import comfy.model_management
 import comfy.model_sampling
 
+MAX_RECOURSE_INPUTS = 8
 MODEL_TO_TYPE = {
     "SD3": 6,
     "HunyuanDiT": 5,
@@ -380,12 +381,20 @@ class SelectahAdv:
                         "round": 0.001,
                     },
                 ),
-                "override": (
+                "int_0": (
                     "INT",
                     {
                         "default": 0,
                         "min": -0xFFFFFFFE,
                         "max": 0xFFFFFFFE,
+                    },
+                ),
+                "recourse": (
+                    "INT",
+                    {
+                        "default": 1,
+                        "min": 1,
+                        "max": MAX_RECOURSE_INPUTS,
                     },
                 ),
             },
@@ -403,6 +412,7 @@ class SelectahAdv:
         "FLOAT",
         "FLOAT",
         "INT",
+        "INT",
     )
 
     RETURN_NAMES = (
@@ -417,24 +427,12 @@ class SelectahAdv:
         "SHIFT_4",
         "ALT_SCALE",
         "OVERRIDE",
+        "RECOURSE",
     )
     FUNCTION = "selectah_adv"
     CATEGORY = SELECTOR_CATEGORY_PATH
 
-    def selectah_adv(
-        self,
-        clip_skip=None,
-        str_1=None,
-        str_2=None,
-        str_3=None,
-        str_4=None,
-        shift_1=None,
-        shift_2=None,
-        shift_3=None,
-        shift_4=None,
-        alt_scale=None,
-        override=0,
-    ):
+    def selectah_adv(self, clip_skip=None, str_1=None, str_2=None, str_3=None, str_4=None, shift_1=None, shift_2=None, shift_3=None, shift_4=None, alt_scale=None, override=0, recourse=1):
         """
         Choose advanced workflow settings from a central place\n
         """
@@ -450,6 +448,7 @@ class SelectahAdv:
             shift_4,
             alt_scale,
             override,
+            recourse,
         )
 
 

@@ -2,7 +2,7 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "4.0.1"
+@version: "4.0.4"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
@@ -123,7 +123,7 @@ class RecoursePolar:
     DESCRIPTION = RECOURSE_DESC
     FUNCTION = "checkcond"
 
-    def checkcond(self, pos_a, pos_b, pos_c, pos_d, neg_a, neg_b, neg_c, neg_d):
+    def checkcond(self, pos_a=None, pos_b=None, pos_c=None, pos_d=None, neg_a=None, neg_b=None, neg_c=None, neg_d=None):
         pos_kwargs = [pos_a, pos_b, pos_c, pos_d]
         neg_kwargs = [neg_a, neg_b, neg_c, neg_d]
         pos_out = next((pos for pos in pos_kwargs if pos), None)

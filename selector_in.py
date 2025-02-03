@@ -2,7 +2,7 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "4.0.1"
+@version: "4.0.4"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
@@ -391,55 +391,47 @@ class SelInFloat:
     @classmethod
     def INPUT_TYPES(s):
         node_type = "FLOAT"
+        node_values = {
+            "default": 1.000,
+            "min": 0.000,
+            "max": 1000.000,
+            "step": 0.001,
+            "round": 0.001,
+            "lazy": True,
+        }
         return {
             "optional": {
                 "float1": (
                     node_type,
-                    {
-                        "lazy": True,
-                    },
+                    node_values,
                 ),
                 "float2": (
                     node_type,
-                    {
-                        "lazy": True,
-                    },
+                    node_values,
                 ),
                 "float3": (
                     node_type,
-                    {
-                        "lazy": True,
-                    },
+                    node_values,
                 ),
                 "float4": (
                     node_type,
-                    {
-                        "lazy": True,
-                    },
+                    node_values,
                 ),
                 "float5": (
                     node_type,
-                    {
-                        "lazy": True,
-                    },
+                    node_values,
                 ),
                 "float6": (
                     node_type,
-                    {
-                        "lazy": True,
-                    },
+                    node_values,
                 ),
                 "float7": (
                     node_type,
-                    {
-                        "lazy": True,
-                    },
+                    node_values,
                 ),
                 "float8": (
                     node_type,
-                    {
-                        "lazy": True,
-                    },
+                    node_values,
                 ),
             },
             "required": {
@@ -458,8 +450,7 @@ class SelInFloat:
         live_output = f"{self.field_name}{int(kwargs['model_type'])}"
         if live_output in kwargs:
             return [live_output]
-        else:
-            return []
+        return []
 
     RETURN_TYPES = (node_type,)
     RETURN_NAMES = (node_type,)
