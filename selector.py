@@ -4,7 +4,7 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "4.0.4"
+@version: "4.0.5"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
@@ -36,7 +36,20 @@ MODEL_2 = "This port is activated in case MODEL_1 has no signal."
 RECOURSE_PORT = "The lowest number port with an active signal is used."
 STRING_PORT = "A single string to send"
 LINK_PORT = "All strings are joined together and sent as one"
-
+SELECTOR_OUT_NAMES = (
+    "WIDTH",
+    "HEIGHT",
+    "BATCH_SIZE",
+    "STEPS",
+    "REFINER_STEPS",
+    "CFG",
+    "REFINER_CFG",
+    "DENOISE_STR",
+    "SCALE",
+    "VARIATION_STR",
+    "SAMPLER_NAME",
+    "SCHEDULER",
+)
 
 SD_RES = 8
 XL_RES = 9
@@ -152,7 +165,7 @@ class Selectah:
                 "cfg": (
                     "FLOAT",
                     {
-                        "default": 1.000,
+                        "default": 1.125,
                         "min": 0.000,
                         "max": 1000.000,
                         "step": 0.001,
@@ -169,7 +182,7 @@ class Selectah:
                         "round": 0.001,
                     },
                 ),
-                "str_denoise": (
+                "denoise_str": (
                     "FLOAT",
                     {
                         "default": 1.000,
@@ -219,20 +232,7 @@ class Selectah:
         comfy.samplers.KSampler.SCHEDULERS,
     )
 
-    RETURN_NAMES = (
-        "WIDTH",
-        "HEIGHT",
-        "BATCH_SIZE",
-        "STEPS",
-        "REFINER_STEPS",
-        "CFG",
-        "REFINER_CFG",
-        "DENOISE",
-        "VARIATION_STR",
-        "SCALE",
-        "SAMPLER_NAME",
-        "SCHEDULER",
-    )
+    RETURN_NAMES = SELECTOR_OUT_NAMES
     FUNCTION = "selectah"
     CATEGORY = SELECTOR_CATEGORY_PATH
 
@@ -245,7 +245,7 @@ class Selectah:
         refiner_steps=None,
         cfg=None,
         refiner_cfg=None,
-        str_denoise=None,
+        denoise_str=None,
         scale=None,
         variation_str=None,
         sampler_name=None,
@@ -265,10 +265,10 @@ class Selectah:
             if title == aspect_ratio:
                 if rotation == "portrait":
                     width, height = height, width  # Swap for portrait orientation
-                return (width, height, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale, variation_str, sampler_name, scheduler)
+                return (width, height, batch, steps, refiner_steps, cfg, refiner_cfg, denoise_str, scale, variation_str, sampler_name, scheduler)
 
         # If aspect ratio is not found, return None for width and height
-        return (None, None, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale, variation_str, sampler_name, scheduler)
+        return (None, None, batch, steps, refiner_steps, cfg, refiner_cfg, denoise_str, scale, variation_str, sampler_name, scheduler)
 
 
 class SelectahAdv:
@@ -426,13 +426,13 @@ class SelectahAdv:
         "SHIFT_3",
         "SHIFT_4",
         "ALT_SCALE",
-        "OVERRIDE",
+        "INT_0",
         "RECOURSE",
     )
     FUNCTION = "selectah_adv"
     CATEGORY = SELECTOR_CATEGORY_PATH
 
-    def selectah_adv(self, clip_skip=None, str_1=None, str_2=None, str_3=None, str_4=None, shift_1=None, shift_2=None, shift_3=None, shift_4=None, alt_scale=None, override=0, recourse=1):
+    def selectah_adv(self, clip_skip=None, str_1=None, str_2=None, str_3=None, str_4=None, shift_1=None, shift_2=None, shift_3=None, shift_4=None, alt_scale=None, int_0=1, recourse=1):
         """
         Choose advanced workflow settings from a central place\n
         """
@@ -447,170 +447,157 @@ class SelectahAdv:
             shift_3,
             shift_4,
             alt_scale,
-            override,
+            int_0,
             recourse,
         )
 
 
-class SelectahHub:
-    """Pass settings across graph easier"""
+# class SelectahHub:
+#     """Pass settings across graph easier"""
 
-    def __init__(self):
-        pass
+#     def __init__(self):
+#         pass
 
-    @classmethod
-    def INPUT_TYPES(cls):
-        """User inputs"""
+#     @classmethod
+#     def INPUT_TYPES(cls):
+#         """User inputs"""
 
-        return {
-            "optional": {
-                "width": (
-                    "INT",
-                    {
-                        "default": 1,
-                        "min": -10000,
-                        "max": 10000,
-                    },
-                ),
-                "height": (
-                    "INT",
-                    {
-                        "default": 1,
-                        "min": -10000,
-                        "max": 10000,
-                    },
-                ),
-                "batch": (
-                    "INT",
-                    {
-                        "default": 1,
-                        "min": -10000,
-                        "max": 10000,
-                    },
-                ),
-                "steps": (
-                    "INT",
-                    {
-                        "default": 20,
-                        "min": -10000,
-                        "max": 10000,
-                    },
-                ),
-                "refiner_steps": (
-                    "INT",
-                    {
-                        "default": 0,
-                        "min": -10000,
-                        "max": 10000,
-                    },
-                ),
-                "cfg": (
-                    "FLOAT",
-                    {
-                        "default": 1.000,
-                        "min": 0.000,
-                        "max": 1000.000,
-                        "step": 0.001,
-                        "round": 0.001,
-                    },
-                ),
-                "refiner_cfg": (
-                    "FLOAT",
-                    {
-                        "default": 1.000,
-                        "min": 0.000,
-                        "max": 1000.000,
-                        "step": 0.001,
-                        "round": 0.001,
-                    },
-                ),
-                "str_denoise": (
-                    "FLOAT",
-                    {
-                        "default": 1.000,
-                        "min": 0.000,
-                        "max": 1000.000,
-                        "step": 0.001,
-                        "round": 0.001,
-                    },
-                ),
-                "scale": (
-                    "FLOAT",
-                    {
-                        "default": 2.000,
-                        "min": 0.000,
-                        "max": 1000.000,
-                        "step": 0.001,
-                        "round": 0.001,
-                    },
-                ),
-                "variation_str": (
-                    "FLOAT",
-                    {
-                        "default": 0.000,
-                        "min": 0.000,
-                        "max": 1000.000,
-                        "step": 0.001,
-                        "round": 0.001,
-                    },
-                ),
-                "sampler_name": (comfy.samplers.KSampler.SAMPLERS,),
-                "scheduler": (comfy.samplers.KSampler.SCHEDULERS,),
-            },
-            "required": {},
-        }
+#         return {
+#             "optional": {
+#                 "width": (
+#                     "INT",
+#                     {
+#                         "default": 1,
+#                         "min": -10000,
+#                         "max": 10000,
+#                     },
+#                 ),
+#                 "height": (
+#                     "INT",
+#                     {
+#                         "default": 1,
+#                         "min": -10000,
+#                         "max": 10000,
+#                     },
+#                 ),
+#                 "batch": (
+#                     "INT",
+#                     {
+#                         "default": 1,
+#                         "min": -10000,
+#                         "max": 10000,
+#                     },
+#                 ),
+#                 "steps": (
+#                     "INT",
+#                     {
+#                         "default": 20,
+#                         "min": -10000,
+#                         "max": 10000,
+#                     },
+#                 ),
+#                 "refiner_steps": (
+#                     "INT",
+#                     {
+#                         "default": 0,
+#                         "min": -10000,
+#                         "max": 10000,
+#                     },
+#                 ),
+#                 "cfg": (
+#                     "FLOAT",
+#                     {
+#                         "default": 1.000,
+#                         "min": 0.000,
+#                         "max": 1000.000,
+#                         "step": 0.001,
+#                         "round": 0.001,
+#                     },
+#                 ),
+#                 "refiner_cfg": (
+#                     "FLOAT",
+#                     {
+#                         "default": 1.000,
+#                         "min": 0.000,
+#                         "max": 1000.000,
+#                         "step": 0.001,
+#                         "round": 0.001,
+#                     },
+#                 ),
+#                 "denoise_str": (
+#                     "FLOAT",
+#                     {
+#                         "default": 1.000,
+#                         "min": 0.000,
+#                         "max": 1000.000,
+#                         "step": 0.001,
+#                         "round": 0.001,
+#                     },
+#                 ),
+#                 "scale": (
+#                     "FLOAT",
+#                     {
+#                         "default": 2.000,
+#                         "min": 0.000,
+#                         "max": 1000.000,
+#                         "step": 0.001,
+#                         "round": 0.001,
+#                     },
+#                 ),
+#                 "variation_str": (
+#                     "FLOAT",
+#                     {
+#                         "default": 0.000,
+#                         "min": 0.000,
+#                         "max": 1000.000,
+#                         "step": 0.001,
+#                         "round": 0.001,
+#                     },
+#                 ),
+#                 "sampler_name": (comfy.samplers.KSampler.SAMPLERS,),
+#                 "scheduler": (comfy.samplers.KSampler.SCHEDULERS,),
+#             },
+#             "required": {},
+#         }
 
-    RETURN_TYPES = (
-        "INT",
-        "INT",
-        "INT",
-        "INT",
-        "INT",
-        "FLOAT",
-        "FLOAT",
-        "FLOAT",
-        "FLOAT",
-        "FLOAT",
-        comfy.samplers.KSampler.SAMPLERS,
-        comfy.samplers.KSampler.SCHEDULERS,
-    )
+#     RETURN_TYPES = (
+#         "INT",
+#         "INT",
+#         "INT",
+#         "INT",
+#         "INT",
+#         "FLOAT",
+#         "FLOAT",
+#         "FLOAT",
+#         "FLOAT",
+#         "FLOAT",
+#         comfy.samplers.KSampler.SAMPLERS,
+#         comfy.samplers.KSampler.SCHEDULERS,
+#     )
 
-    RETURN_NAMES = (
-        "WIDTH",
-        "HEIGHT",
-        "BATCH_SIZE",
-        "STEPS",
-        "REFINER_STEPS",
-        "CFG",
-        "REFINER_CFG",
-        "DENOISE",
-        "VARIATION_STR",
-        "SCALE",
-        "SAMPLER_NAME",
-        "SCHEDULER",
-    )
-    FUNCTION = "selectah"
-    CATEGORY = SELECTOR_CATEGORY_PATH
+#     RETURN_NAMES = SELECTOR_OUT_NAMES
+#     FUNCTION = "selectah"
+#     CATEGORY = SELECTOR_CATEGORY_PATH
 
-    def selectah(
-        self,
-        width=None,
-        height=None,
-        batch=None,
-        steps=None,
-        refiner_steps=None,
-        cfg=None,
-        refiner_cfg=None,
-        str_denoise=None,
-        scale=None,
-        variation_str=None,
-        sampler_name=None,
-        scheduler=None,
-    ):
-        """
-        Pass settings from selectah through the graph
-        """
-        return (width, height, batch, steps, refiner_steps, cfg, refiner_cfg, str_denoise, scale, variation_str, sampler_name, scheduler)
+#     def selectah(
+#         self,
+#         width=None,
+#         height=None,
+#         batch=None,
+#         steps=None,
+#         refiner_steps=None,
+#         cfg=None,
+#         refiner_cfg=None,
+#         denoise_str=None,
+#         scale=None,
+#         variation_str=None,
+#         sampler_name=None,
+#         scheduler=None,
+#     ):
+#         """
+#         Pass settings from selectah through the graph
+#         """
+#         return (width, height, batch, steps, refiner_steps, cfg, refiner_cfg, denoise_str, scale, variation_str, sampler_name, scheduler)
 
 
 class RecourseCheckpoint:
@@ -695,7 +682,8 @@ class RecourseStrings:
     @classmethod
     def INPUT_TYPES(s):
         return {
-            "required": {
+            "required": {},
+            "optional": {
                 "text_1": (
                     "STRING",
                     {
@@ -704,8 +692,6 @@ class RecourseStrings:
                         "dynamicPrompts": True,
                     },
                 ),
-            },
-            "optional": {
                 "text_2": (
                     "STRING",
                     {
@@ -741,26 +727,32 @@ class RecourseStrings:
         "SEED",
         "NOISE_SEED",
     )
-    OUTPUT_TOOLTIPS = (LINK_PORT, STRING_PORT, STRING_PORT, STRING_PORT, None, None)
+    OUTPUT_TOOLTIPS = (STRING_PORT, STRING_PORT, STRING_PORT, LINK_PORT, None, None)
     FUNCTION = "recourse_string"
 
     CATEGORY = SELECTOR_CATEGORY_PATH
 
-    def recourse_string(self, text_1, seed=0, noise_seed=0, text_2="", text_3=""):
+    def recourse_string(self, text_1="", seed=0, noise_seed=0, text_2="", text_3=""):
         """
         Send text to different locations in a workflow\n
         :return: Tuple of strings and seeds
         """
-        # data = [string_1, string_2, string_3]
-        # full_out = "".join(data)
+        # data = [text_1, text_2, text_3]
+        # all_text = "".join(data)
 
-        return (text_1, text_2, text_3, seed, noise_seed)
+        return (
+            text_1,
+            text_2,
+            text_3,
+            seed,
+            noise_seed,
+        )
 
 
 NODE_CLASS_MAPPINGS = {
     "Selector": Selectah,
     "Selector Advanced": SelectahAdv,
-    "Selector Hub": SelectahHub,
+    # "Selector Hub": SelectahHub,
     "RecourseCkpt": RecourseCheckpoint,
     "RecourseStrings": RecourseStrings,
 }
@@ -768,7 +760,7 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "Selector": "Selector...",
     "Selector Advanced": "Selector Advanced...",
-    "Selector Hub": "Selector Hub...",
+    # "Selector Hub": "Selector Hub...",
     "RecourseCkpt": "RecourseCheck...",
     "RecourseStrings": "RecourseStrings...",
 }
