@@ -1,7 +1,7 @@
 [project]
 name        = "comfyui-selector"
 description = "Selector and Recourse. Presets & failsafes. Work flow. EXDYSA"
-version     = "4.0.5"
+version     = "4.0.6"
 license     = { file = "LICENSE" }
 
 [project.urls]
