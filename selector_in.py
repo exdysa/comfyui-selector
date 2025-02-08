@@ -2,7 +2,7 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "4.0.4"
+@version: "4.0.5"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
@@ -22,6 +22,13 @@ OUTPUT_4 = "Active when HunyuanDIT is detected"
 OUTPUT_5 = "Active when Stable Diffusion 3 is detected"
 OUTPUT_6 = ""
 OUTPUT_7 = ""
+
+import comfy.samplers
+import comfy.sd
+import comfy.utils
+import comfy.model_base
+import comfy.model_management
+import comfy.model_sampling
 
 
 class SelInLatent:
@@ -385,7 +392,7 @@ class SelInFloat:
     def __init__(self):
         pass
 
-    field_name = "cfg"
+    field_name = "float"
     node_type = "FLOAT"
 
     @classmethod
