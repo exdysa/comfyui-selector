@@ -393,52 +393,90 @@ class SelInFloat:
         pass
 
     field_name = "float"
-    node_type = "FLOAT"
 
     @classmethod
     def INPUT_TYPES(s):
-        node_type = "FLOAT"
-        node_values = {
-            "default": 1.000,
-            "min": 0.000,
-            "max": 1000.000,
-            "step": 0.001,
-            "round": 0.001,
-            "lazy": True,
-        }
         return {
             "optional": {
                 "float1": (
-                    node_type,
-                    node_values,
+                    "FLOAT",
+                    {
+                        "default": 1.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
                 ),
                 "float2": (
-                    node_type,
-                    node_values,
+                    "FLOAT",
+                    {
+                        "default": 1.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
                 ),
                 "float3": (
-                    node_type,
-                    node_values,
+                    "FLOAT",
+                    {
+                        "default": 1.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
                 ),
                 "float4": (
-                    node_type,
-                    node_values,
+                    "FLOAT",
+                    {
+                        "default": 1.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
                 ),
                 "float5": (
-                    node_type,
-                    node_values,
+                    "FLOAT",
+                    {
+                        "default": 1.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
                 ),
                 "float6": (
-                    node_type,
-                    node_values,
+                    "FLOAT",
+                    {
+                        "default": 1.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
                 ),
                 "float7": (
-                    node_type,
-                    node_values,
+                    "FLOAT",
+                    {
+                        "default": 1.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
                 ),
                 "float8": (
-                    node_type,
-                    node_values,
+                    "FLOAT",
+                    {
+                        "default": 1.000,
+                        "min": 0.000,
+                        "max": 1000.000,
+                        "step": 0.001,
+                        "round": 0.001,
+                    },
                 ),
             },
             "required": {
@@ -459,8 +497,8 @@ class SelInFloat:
             return [live_output]
         return []
 
-    RETURN_TYPES = (node_type,)
-    RETURN_NAMES = (node_type,)
+    RETURN_TYPES = ("FLOAT",)
+    RETURN_NAMES = ("FLOAT",)
     FUNCTION = "select_model"
 
     CATEGORY = SELECTOR_IN_CATEGORY_PATH
@@ -479,59 +517,73 @@ class SelInInt:
         pass
 
     field_name = "int"
-    node_type = "INT"
 
     @classmethod
     def INPUT_TYPES(s):
-        node_type = "INT"
         return {
             "optional": {
                 "int1": (
-                    node_type,
+                    "INT",
                     {
-                        "lazy": True,
+                        "default": 0,
+                        "min": -10000,
+                        "max": 10000,
                     },
                 ),
                 "int2": (
-                    node_type,
+                    "INT",
                     {
-                        "lazy": True,
+                        "default": 0,
+                        "min": -10000,
+                        "max": 10000,
                     },
                 ),
                 "int3": (
-                    node_type,
+                    "INT",
                     {
-                        "lazy": True,
+                        "default": 0,
+                        "min": -10000,
+                        "max": 10000,
                     },
                 ),
                 "int4": (
-                    node_type,
+                    "INT",
                     {
-                        "lazy": True,
+                        "default": 0,
+                        "min": -10000,
+                        "max": 10000,
                     },
                 ),
                 "int5": (
-                    node_type,
+                    "INT",
                     {
-                        "lazy": True,
+                        "default": 0,
+                        "min": -10000,
+                        "max": 10000,
                     },
                 ),
                 "int6": (
-                    node_type,
+                    "INT",
                     {
-                        "lazy": True,
+                        "default": 0,
+                        "min": -10000,
+                        "max": 10000,
                     },
                 ),
                 "int7": (
-                    node_type,
+                    "INT",
                     {
-                        "lazy": True,
+                        "default": 0,
+                        "min": -10000,
+                        "max": 10000,
                     },
                 ),
                 "int8": (
-                    node_type,
+                    "INT",
                     {
-                        "lazy": True,
+                        "default": 0,
+                        "min": -10000,
+                        "max": 10000,
                     },
                 ),
             },
@@ -554,8 +606,8 @@ class SelInInt:
         else:
             return []
 
-    RETURN_TYPES = (node_type,)
-    RETURN_NAMES = (node_type,)
+    RETURN_TYPES = ("INT",)
+    RETURN_NAMES = ("INT",)
     FUNCTION = "select_model"
 
     CATEGORY = SELECTOR_IN_CATEGORY_PATH

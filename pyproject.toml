@@ -12,3 +12,15 @@ Repository = "https://github.com/exdysa/comfyui-selector"
 PublisherId = "exdysa"
 DisplayName = "comfyui-selector"
 Icon        = ""
+
+[tool.setuptools.packages.find]
+where = ["."] # list of folders that contain the packages (["."] by default)
+include = [
+    "__init__",
+    "selector",
+    "selector_in",
+    "selector_out",
+    "recourse",
+] # package names should match these glob patterns (["*"] by default)
+exclude = [] # exclude packages matching these glob patterns (empty by default)
+namespaces = false
