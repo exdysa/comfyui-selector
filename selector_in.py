@@ -2,7 +2,7 @@
 @author:"˶𝞢⤬⫒ⵖsᐼ˶"
 @title: "Selector"
 @nickname: "Selector"
-@version: "4.0.6"
+@version: "4.0.7"
 @project: "https://github.com/exdysa/comfyui-selector",
 @description: "EXDYSA. Selector and Recourse. Presets & failsafes. Work flow."
 """
@@ -22,13 +22,6 @@ OUTPUT_4 = "Active when HunyuanDIT is detected"
 OUTPUT_5 = "Active when Stable Diffusion 3 is detected"
 OUTPUT_6 = ""
 OUTPUT_7 = ""
-
-import comfy.samplers
-import comfy.sd
-import comfy.utils
-import comfy.model_base
-import comfy.model_management
-import comfy.model_sampling
 
 
 class SelInLatent:
@@ -392,91 +385,53 @@ class SelInFloat:
     def __init__(self):
         pass
 
-    field_name = "float"
+    field_name = "cfg"
+    node_type = "FLOAT"
 
     @classmethod
     def INPUT_TYPES(s):
+        node_type = "FLOAT"
+        node_values = {
+            "default": 1.000,
+            "min": 0.000,
+            "max": 1000.000,
+            "step": 0.001,
+            "round": 0.001,
+            "lazy": True,
+        }
         return {
             "optional": {
                 "float1": (
-                    "FLOAT",
-                    {
-                        "default": 1.000,
-                        "min": 0.000,
-                        "max": 1000.000,
-                        "step": 0.001,
-                        "round": 0.001,
-                    },
+                    node_type,
+                    node_values,
                 ),
                 "float2": (
-                    "FLOAT",
-                    {
-                        "default": 1.000,
-                        "min": 0.000,
-                        "max": 1000.000,
-                        "step": 0.001,
-                        "round": 0.001,
-                    },
+                    node_type,
+                    node_values,
                 ),
                 "float3": (
-                    "FLOAT",
-                    {
-                        "default": 1.000,
-                        "min": 0.000,
-                        "max": 1000.000,
-                        "step": 0.001,
-                        "round": 0.001,
-                    },
+                    node_type,
+                    node_values,
                 ),
                 "float4": (
-                    "FLOAT",
-                    {
-                        "default": 1.000,
-                        "min": 0.000,
-                        "max": 1000.000,
-                        "step": 0.001,
-                        "round": 0.001,
-                    },
+                    node_type,
+                    node_values,
                 ),
                 "float5": (
-                    "FLOAT",
-                    {
-                        "default": 1.000,
-                        "min": 0.000,
-                        "max": 1000.000,
-                        "step": 0.001,
-                        "round": 0.001,
-                    },
+                    node_type,
+                    node_values,
                 ),
                 "float6": (
-                    "FLOAT",
-                    {
-                        "default": 1.000,
-                        "min": 0.000,
-                        "max": 1000.000,
-                        "step": 0.001,
-                        "round": 0.001,
-                    },
+                    node_type,
+                    node_values,
                 ),
                 "float7": (
-                    "FLOAT",
-                    {
-                        "default": 1.000,
-                        "min": 0.000,
-                        "max": 1000.000,
-                        "step": 0.001,
-                        "round": 0.001,
-                    },
+                    node_type,
+                    node_values,
                 ),
                 "float8": (
-                    "FLOAT",
-                    {
-                        "default": 1.000,
-                        "min": 0.000,
-                        "max": 1000.000,
-                        "step": 0.001,
-                        "round": 0.001,
-                    },
+                    node_type,
+                    node_values,
                 ),
             },
             "required": {
@@ -497,8 +452,8 @@ class SelInFloat:
             return [live_output]
         return []
 
-    RETURN_TYPES = ("FLOAT",)
-    RETURN_NAMES = ("FLOAT",)
+    RETURN_TYPES = (node_type,)
+    RETURN_NAMES = (node_type,)
     FUNCTION = "select_model"
 
     CATEGORY = SELECTOR_IN_CATEGORY_PATH
@@ -517,73 +472,59 @@ class SelInInt:
         pass
 
     field_name = "int"
+    node_type = "INT"
 
     @classmethod
     def INPUT_TYPES(s):
+        node_type = "INT"
         return {
             "optional": {
                 "int1": (
-                    "INT",
+                    node_type,
                     {
-                        "default": 0,
-                        "min": -10000,
-                        "max": 10000,
+                        "lazy": True,
                     },
                 ),
                 "int2": (
-                    "INT",
+                    node_type,
                     {
-                        "default": 0,
-                        "min": -10000,
-                        "max": 10000,
+                        "lazy": True,
                     },
                 ),
                 "int3": (
-                    "INT",
+                    node_type,
                     {
-                        "default": 0,
-                        "min": -10000,
-                        "max": 10000,
+                        "lazy": True,
                     },
                 ),
                 "int4": (
-                    "INT",
+                    node_type,
                     {
-                        "default": 0,
-                        "min": -10000,
-                        "max": 10000,
+                        "lazy": True,
                     },
                 ),
                 "int5": (
-                    "INT",
+                    node_type,
                     {
-                        "default": 0,
-                        "min": -10000,
-                        "max": 10000,
+                        "lazy": True,
                     },
                 ),
                 "int6": (
-                    "INT",
+                    node_type,
                     {
-                        "default": 0,
-                        "min": -10000,
-                        "max": 10000,
+                        "lazy": True,
                     },
                 ),
                 "int7": (
-                    "INT",
+                    node_type,
                     {
-                        "default": 0,
-                        "min": -10000,
-                        "max": 10000,
+                        "lazy": True,
                     },
                 ),
                 "int8": (
-                    "INT",
+                    node_type,
                     {
-                        "default": 0,
-                        "min": -10000,
-                        "max": 10000,
+                        "lazy": True,
                     },
                 ),
             },
@@ -606,8 +547,8 @@ class SelInInt:
         else:
             return []
 
-    RETURN_TYPES = ("INT",)
-    RETURN_NAMES = ("INT",)
+    RETURN_TYPES = (node_type,)
+    RETURN_NAMES = (node_type,)
     FUNCTION = "select_model"
 
     CATEGORY = SELECTOR_IN_CATEGORY_PATH
